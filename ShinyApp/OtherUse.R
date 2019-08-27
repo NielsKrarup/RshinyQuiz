@@ -1,4 +1,17 @@
 #Hello
+df <-
+  data.frame(var = c('a1l', 'a1r'),
+             val = c('Question 1 left', 'Question 1 right'))
+library(gapminder)
+gapminder
+
+
+library(shiny)
+#the number of teams
+Nteams <- 5
+
+
+
 library(shiny)
 ui <- fluidPage(
   titlePanel("Bins output"),
