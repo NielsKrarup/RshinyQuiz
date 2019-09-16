@@ -69,14 +69,14 @@ server <- function(input, output) {
       breaks = bins,
       col = 'darkgray',
       border = 'white',
-      main = input$a1
+      main = input$a1l
     )
   })
   output$distPlot2 <- renderPlot({
     plot(cars, pch = input$ans2)
   })
   output$distPlot3 <- renderTable({
-    head(iris, n = input$size)
+    head(iris, n = input$a1l)
   })
   
 }
