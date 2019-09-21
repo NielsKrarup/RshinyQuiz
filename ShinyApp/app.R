@@ -1,50 +1,40 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 
-# Define UI for application that draws a histogram
 ui <- fluidPage(
-   
-   # Application title
-   titlePanel("Old Faithful Geyser Data"),
-   
-   # Sidebar with a slider input for number of bins 
-   sidebarLayout(
-      sidebarPanel(
-         sliderInput("bins",
-                     "Number of bins:",
-                     min = 1,
-                     max = 50,
-                     value = 30)
-      ),
-      
-      # Show a plot of the generated distribution
-      mainPanel(
-         plotOutput("distPlot")
-      )
-   )
+  checkboxGroupInput(
+    inputId = "selected_var",
+    label = "Choose variables:",
+    choices = c(
+      "R" = "r",
+      "F" = "f",
+      "M" = "m"
+    ),
+    selected = c("r","f")
+  ),
+  uiOutput('weights_input'),
+  textOutput('score')
 )
 
-# Define server logic required to draw a histogram
 server <- function(input, output) {
-   
-   output$distPlot <- renderPlot({
-      # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      
-      # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
-   })
+  
+  output$weights_input <- renderUI({ 
+    req(input$selected_var)
+    lapply(1:length(input$selected_var), function(i) {
+      numericInput(inputId = paste0(input$selected_var[i],"_weight"), label = input$selected_var[i], min = 0, max = 1, value = 0)
+    })
+  })
+  
+  output$score <- renderText({
+    req(input$selected_var)
+    selected = input$selected_var
+    values = sapply(1:length(input$selected_var), function(i) {
+      req(input[[ paste0(input$selected_var[i],"_weight")]]);
+      input[[ paste0(input$selected_var[i],"_weight")]]
+    })
+    values = setNames(values,selected)
+    paste0('Input: [', paste(names(values), values, sep = ":", collapse = ", "), ']. The sum of the values is ', sum(values))
+    
+  })
 }
 
-# Run the application 
-shinyApp(ui = ui, server = server)
-
+shinyApp(ui,server)
