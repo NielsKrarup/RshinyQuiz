@@ -32,28 +32,33 @@ ui <- fluidPage(
   
   ##### Question inputs Sidebar with a slider input for number of bins
   fluidRow(
-    column(12,
            h3("Submissons:")
     ),
+  fluidRow(
     column(
       6,
       ##UI for selecting the team answering.
       uiOutput("TeamsRadioButtons"),
       
       ## Selecting the current question being answered
-      selectInput(inputId = "CurQuestion", label = "Question",choices = 1:13))
+      selectInput(inputId = "Cur_Question", label = "Question",choices = 1:13))
   ),
 fluidRow(
   ### Left Interval: al
   column(
     3,
-    passwordInput("al", 'Left Interval Quess', placeholder = 'Crypto_PassWord')
+    passwordInput("Cur_L", 'Left Interval Quess', placeholder = 'Crypto_PassWord')
   ),
   ### Right Interval: ar
   column(
     3,
-    passwordInput("ar", 'Question 1, Left Interval', placeholder = 'CryptoPassWord')
+    passwordInput("Cur_R", 'Right Interval Quess', placeholder = 'Crypto_PassWord')
+  )
   ),
+fluidRow(
+  column(6,
+         actionButton(inputId = "Cur_submit", label = "Submit")
+         ),
   column(6,
          # Show a plot of the generated distribution
          textOutput(outputId = "text1"),
@@ -63,7 +68,7 @@ fluidRow(
 fluidRow(
   column(12,
          verbatimTextOutput(outputId = 'out1'),
-         verbatimTextOutput(outputId = 'out2'),
+         verbatimTextOutput(outputId = 'Score'),
          verbatimTextOutput(outputId = 'out3')
   )
 )
@@ -71,6 +76,33 @@ fluidRow(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+  
+  #Questions and corresponding answers
+  df_QA <- data.frame(question = 1:11,
+                      answer = c(
+                        193, #Snurre snup
+                        10918, #Mugabe
+                        NA, #3
+                        NA, #4
+                        NA, #5
+                        NA, #6
+                        NA, #7
+                        NA, #8
+                        NA, #9
+                        NA, #10
+                        NA #11
+                                ) 
+                        )
+  #Score Info Data frame
+  df_Info <- data.frame(Team = character(0), 
+                        Question = character(0), 
+                        Try = character(0), 
+                        Score = character(0))
+
+  Cur_Info <- data.frame(Team = 'PIK', Question = 2, Try = 1, Answers_Left = 15, Score = 'X')  
+  
+  df_Info <- rbind(df_Info, Cur_Info)
+  
   output$distPlot1 <- renderPlot({
     # generate bins based on input$bins from ui.R
     x    <- rnorm(100)
@@ -86,22 +118,24 @@ server <- function(input, output) {
   })
   
   output$out3 <- renderPrint({
+    #Go button 
     team_names <- c()
     for(i in 1:input$NoTeams){
       team_names <- c(team_names, input[[ paste0("team_",as.character(i))]])
     }
     team_names2 <- reactive(team_names)
-    team_names2()
+    team_names
   })
   
   #### Interactive UI
+  
   ## For setting team names; 
   output$TeamNamesUI <- renderUI({
     fluidRow(
       h3('Enter names of teams'),
       lapply(1:input$NoTeams,function(iter){
-        column(11.8/input$NoTeams,
-               column(12, textInput(inputId = paste0("team_", iter), label = paste0("Name of team", iter)))
+        column(12/input$NoTeams,
+               column(12, textInput(inputId = paste0("team_", iter), label = paste0("Name of team", iter),value = paste0("PIK",rpois(1,19))))
         )
       })
     )
@@ -112,8 +146,38 @@ server <- function(input, output) {
     for(i in 1:input$NoTeams){
       team_names <- c(team_names, input[[ paste0("team_",as.character(i))]])
     }
-    radioButtons(inputId = "CurTeam", label = "Team", choices = team_names, inline = TRUE, width = "500px")
+    radioButtons(inputId = "Cur_Team", label = "Team", choices = team_names, inline = TRUE, width = "500px")
     
+  })
+  
+  output$Score <- renderText({
+    #Go button 
+    if (input$Cur_submit == 0)
+      return()
+    input$Cur_submit
+    
+    #Calculate Score, X if not correct
+    Score <- reactive({
+      Cur_Question <- input$Cur_Question
+      Cur_Answer <-  df_QA[df_QA$question == Cur_Question, ]$answer
+      
+      
+      
+      Cur_L <- as.numeric(input$Cur_L)
+      Cur_R <- as.numeric(input$Cur_R)
+      
+      if( Cur_L > Cur_R) return(warning("ERROR: LEFT BIGGER THAN RIGHT"))
+      
+      Score <- 
+        if( Cur_L <= Cur_Answer && Cur_Answer <= Cur_R){
+          Score <- floor(Cur_R / Cur_L) 
+        } else 'X'
+      Score
+    })
+    isolate( Score() )
+   
+
+
   })
   
 }
