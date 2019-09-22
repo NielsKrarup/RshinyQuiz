@@ -37,11 +37,21 @@ ui <- fluidPage(
   fluidRow(
     column(
       6,
-      ##UI for selecting the team answering.
-      uiOutput("TeamsRadioButtons"),
-      
-      ## Selecting the current question being answered
-      selectInput(inputId = "Cur_Question", label = "Question",choices = 1:13))
+                    ##UI for selecting the team answering.
+      uiOutput("TeamsRadioButtons")
+      )
+    ),
+  fluidRow(
+    column(3,
+                    ## Selecting the current question being answered
+      selectInput(inputId = "Cur_Question", label = "Question",choices = 1:13)
+      ),
+    column(3,
+           ## Selecting the current TRY  (for correcting errors)
+           ## Should look up from df_info to see number of tries made.
+           selectInput(inputId = "Cur_Try", label = "TRY",choices = 1:3)
+    )
+    
   ),
 fluidRow(
   ### Left Interval: al
