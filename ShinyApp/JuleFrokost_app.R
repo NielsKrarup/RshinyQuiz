@@ -12,6 +12,13 @@ library(ggplot2)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
+  fluidRow(
+    column(12,
+           verbatimTextOutput(outputId = 'out1'),
+           verbatimTextOutput(outputId = 'Score'),
+           verbatimTextOutput(outputId = 'out3')
+    )
+  ),
   # Application title
   h1(paste0("JulefrokostQuiz ", 
             format(
@@ -20,14 +27,20 @@ ui <- fluidPage(
             "  -   UCT+1:   ",
             format(
               Sys.time(), format = "%H:%M:%S"
-            )
-  )
+            ))
   ),
   #Number of teams: NoTeams
   numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1,min = 1, max = 6),
+  
+  ## For printing
+  
   ##UI for setting team names.
   
-  uiOutput('TeamNamesUI'),
+  fluidRow(
+    br(),
+    uiOutput('TeamNamesUI')
+  ),
+
   
   
   ##### Question inputs Sidebar with a slider input for number of bins
@@ -71,22 +84,24 @@ fluidRow(
          ),
   column(6,
          # Show a plot of the generated distribution
-         textOutput(outputId = "text1"),
          tableOutput("distPlot3"),
          plotOutput(outputId = 'distPlot1',height = 600))
-),
-fluidRow(
-  column(12,
-         verbatimTextOutput(outputId = 'out1'),
-         verbatimTextOutput(outputId = 'Score'),
-         verbatimTextOutput(outputId = 'out3')
-  )
 )
+
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
+  ########### Get Reactive team names
+  team_names <- reactive({
+    sapply(1:(input$NoTeams), function(i) {
+      req(input[[ paste0("team_", i)]]);
+      input[[  paste0("team_", i)]]})
+  }) 
+
+
+
   #Questions and corresponding answers
   df_QA <- data.frame(question = 1:11,
                       answer = c(
@@ -103,15 +118,29 @@ server <- function(input, output) {
                         NA #11
                                 ) 
                         )
-  #Score Info Data frame
-  df_Info <- data.frame(Team = character(0), 
+  #Score Info Data frame, Reactive
+  df_Info <- reactive({
+    data.frame(Team = character(0), 
                         Question = character(0), 
                         Try = character(0), 
                         Score = character(0))
+  })
+  
+  #Plot data frame, containing the score after 0 <= n <= 16 tries.
+  df_Plot <- reactive({
+    #input$Teams_set_go
+    
+    isolate({
+      data.frame(Team = "team_names2()",
+                 Answes_spent = rep(0,input$NoTeams),
+                 Score = rep(20480, input$NoTeams))
+    })
+
+  }) 
 
   Cur_Info <- data.frame(Team = 'PIK', Question = 2, Try = 1, Answers_Left = 15, Score = 'X')  
   
-  df_Info <- rbind(df_Info, Cur_Info)
+
   
   output$distPlot1 <- renderPlot({
     # generate bins based on input$bins from ui.R
@@ -127,36 +156,25 @@ server <- function(input, output) {
     plot(cars, pch = input$ans2)
   })
   
-  output$out3 <- renderPrint({
-    #Go button 
-    team_names <- c()
-    for(i in 1:input$NoTeams){
-      team_names <- c(team_names, input[[ paste0("team_",as.character(i))]])
-    }
-    team_names2 <- reactive(team_names)
-    team_names
-  })
+
   
   #### Interactive UI
   
-  ## For setting team names; 
+  ################################### For setting team names; 
   output$TeamNamesUI <- renderUI({
-    fluidRow(
-      h3('Enter names of teams'),
+
       lapply(1:input$NoTeams,function(iter){
-        column(12/input$NoTeams,
-               column(12, textInput(inputId = paste0("team_", iter), label = paste0("Name of team", iter),value = paste0("PIK",rpois(1,19))))
+        column( floor(12 / input$NoTeams ),
+          textInput(inputId = paste0("team_", iter), label = paste0("Name of team", iter))
         )
       })
-    )
   })
-  ## Radiobuttons - For selecting the team answering, based on given names
+  
+  
+  ######################## Radiobuttons - For selecting the current team answering, based on given names
   output$TeamsRadioButtons <- renderUI({
-    team_names <- c()
-    for(i in 1:input$NoTeams){
-      team_names <- c(team_names, input[[ paste0("team_",as.character(i))]])
-    }
-    radioButtons(inputId = "Cur_Team", label = "Team", choices = team_names, inline = TRUE, width = "500px")
+
+    radioButtons(inputId = "Cur_Team", label = "Team", choices = team_names(), inline = TRUE, width = "500px", selected = NA)
     
   })
   

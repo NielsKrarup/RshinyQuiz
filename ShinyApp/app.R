@@ -20,19 +20,19 @@ server <- function(input, output) {
   output$weights_input <- renderUI({ 
     req(input$selected_var)
     lapply(1:length(input$selected_var), function(i) {
-      numericInput(inputId = paste0(input$selected_var[i],"_weight"), label = input$selected_var[i], min = 0, max = 1, value = 0)
+      numericInput(inputId = paste0(input$selected_var[i],"_weight"), label = input$selected_var[i], min = 0, max = 10, value = 0)
     })
   })
   
   output$score <- renderText({
     req(input$selected_var)
+    #selected are the r f m
     selected = input$selected_var
     values = sapply(1:length(input$selected_var), function(i) {
       req(input[[ paste0(input$selected_var[i],"_weight")]]);
       input[[ paste0(input$selected_var[i],"_weight")]]
     })
-    values = setNames(values,selected)
-    paste0('Input: [', paste(names(values), values, sep = ":", collapse = ", "), ']. The sum of the values is ', sum(values))
+    values 
     
   })
 }

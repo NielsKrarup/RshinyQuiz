@@ -18,30 +18,53 @@ ui <- fluidPage(
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
-         sliderInput("bins",
-                     "Number of bins:",
-                     min = 1,
-                     max = 50,
-                     value = 30)
+        numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1,min = 1, max = 6),
+        #uiOutput("SelectTeamRadio"),
+        uiOutput('SelectTeamRadio'),
+        verbatimTextOutput("teams")
+        
       ),
+      mainPanel(
+        uiOutput("UIsetTeams")
+      )
       
       # Show a plot of the generated distribution
-      mainPanel(
-         plotOutput("distPlot")
-      )
+
    )
 )
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
+
+  values <- reactive({
+    sapply(1:(input$NoTeams), function(i) {
+      req(input[[ paste0("team_", i)]]);
+      input[[  paste0("team_", i)]]})
+    
+  }) 
    
-   output$distPlot <- renderPlot({
+   output$UIsetTeams <- renderUI({
       # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      
-      # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+     lapply(1:input$NoTeams,function(iter){
+       column(12/input$NoTeams,
+              textInput(inputId = paste0("team_", iter), label = paste0("Name of team", iter),value = paste0("PIK",rpois(1,19)))
+       )
+     })
+   })
+   
+   #UI for RadioButtons
+   output$SelectTeamRadio <- renderUI({
+     #req(input$team_1)
+     #get names
+
+       radioButtons(inputId = "Cur_Team", label = 'Current team', choices = values())
+
+   })
+   
+   
+   output$teams <- renderPrint({
+     print <- values()
+     print
    })
 }
 
