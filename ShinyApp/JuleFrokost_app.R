@@ -15,7 +15,7 @@ library(ggplot2)
 ui <- fluidPage(
   fluidRow(
     column(12,
-           verbatimTextOutput(outputId = 'out1'),
+           tableOutput(outputId = 'print1'),
            verbatimTextOutput(outputId = 'Score'),
            verbatimTextOutput(outputId = 'out3')
     )
@@ -81,7 +81,7 @@ fluidRow(
   ),
 fluidRow(
   column(6,
-         actionButton(inputId = "Cur_submit", label = "Submit")
+         actionButton(inputId = "Cur_Submit", label = "Submit")
          ),
   column(6,
          # Show a plot of the generated distribution
@@ -94,16 +94,16 @@ fluidRow(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
-  ########### Get Reactive team names
+  ########### Reactive team names taken from TextInput ####
   team_names <- reactive({
     sapply(1:(input$NoTeams), function(i) {
-      req(input[[ paste0("team_", i)]]);
+      req(input[[ paste0("team_", i)]]); #require, so that nothing us done untill all names are set
       input[[  paste0("team_", i)]]})
   }) 
 
 
 
-  #Questions and corresponding answers
+  #Questions and corresponding answers, fixed! not reactive.
   df_QA <- data.frame(question = 1:11,
                       answer = c(
                         193, #Snurre snup
@@ -119,6 +119,7 @@ server <- function(input, output) {
                         NA #11
                                 ) 
                         )
+
   #Score Info Data frame, Reactive
   df_Info <- reactive({
     data.frame(Team = character(0), 
@@ -130,14 +131,18 @@ server <- function(input, output) {
   #Plot data frame, containing the score after 0 <= n <= 16 tries.
   df_Plot <- reactive({
     #input$Teams_set_go
-    
-    isolate({
-      data.frame(Team = "team_names2()",
+    req(input$NoTeams)
+    req(team_names())
+        
+      data.frame(Team = team_names(),
                  Answes_spent = rep(0,input$NoTeams),
                  Score = rep(20480, input$NoTeams))
     })
+  
+  output$print1 <- renderTable({
+    df_Plot()
+  })
 
-  }) 
 
   Cur_Info <- data.frame(Team = 'PIK', Question = 2, Try = 1, Answers_Left = 15, Score = 'X')  
   
@@ -161,7 +166,7 @@ server <- function(input, output) {
   
   #### Interactive UI
   
-  ################################### For setting team names; 
+  ################################### input UI: team names #####
   output$TeamNamesUI <- renderUI({
 
       lapply(1:input$NoTeams,function(iter){
@@ -180,13 +185,22 @@ server <- function(input, output) {
   })
   
   output$Score <- renderText({
+    
     #Go button 
-    if (input$Cur_submit == 0)
-      return()
-    input$Cur_submit
+    if(input$Cur_Submit == 0) return()
+    
+    input$Cur_Submit
     
     #Calculate Score, X if not correct
-    Score <- reactive({
+    Score <- isolate({
+      
+      validate(
+        need(input$Cur_Team, 'Select a Team!!'),
+        need(input$Cur_L, 'Select Left Interval!'),
+        need(input$Cur_R, 'Select Right Interval!')
+      )
+      
+      #Set the current question being answered and the correct value for ref
       Cur_Question <- input$Cur_Question
       Cur_Answer <-  df_QA[df_QA$question == Cur_Question, ]$answer
       
@@ -197,13 +211,13 @@ server <- function(input, output) {
       
       if( Cur_L > Cur_R) return(warning("ERROR: LEFT BIGGER THAN RIGHT"))
       
-      Score <- 
-        if( Cur_L <= Cur_Answer && Cur_Answer <= Cur_R){
-          Score <- floor(Cur_R / Cur_L) 
+      Score <- if( Cur_L <= Cur_Answer && Cur_Answer <= Cur_R){
+          floor(Cur_R / Cur_L) 
         } else 'X'
       Score
     })
-    isolate( Score() )
+    Score
+  #  isolate( Score() )
    
 
 
