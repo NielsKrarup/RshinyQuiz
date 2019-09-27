@@ -1,50 +1,37 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 
-# Define UI for application that draws a histogram
-ui <- fluidPage(
+runApp(list(
   
-  # Application title
-  titlePanel("Old Faithful Geyser Data"),
-  
-  # Sidebar with a slider input for number of bins 
-  sidebarLayout(
+  ui = pageWithSidebar(
+    
+    headerPanel("'Reset inputs' button example"),
+    
     sidebarPanel(
-      textOutput("TextTime")
+      uiOutput('resetable_input'),
+      tags$hr(),
+      actionButton("reset_input", "Reset inputs")
     ),
     
-    # Show a plot of the generated distribution
     mainPanel(
-      uiOutput("CurrentTime")
+      h4("Summary"),
+      verbatimTextOutput("summary")
     )
-  )
-)
-
-# Define server logic required to draw a histogram
-server <- function(input, output) {
-  
-  output$TextTime <- renderText({
-     reactive({
-        format(
-          Sys.time(), format = "%H:%M:%S"
-        )
-        })
     
-  })
+  ),
   
-  
-  
-}
-
-# Run the application 
-shinyApp(ui = ui, server = server)
-
-
+  server = function(input, output, session) {
+    
+    output$summary <- renderText({
+      return(paste(input$mytext, input$mynumber))
+    })
+    
+    output$resetable_input <- renderUI({
+      times <- input$reset_input
+      div(id=letters[(times %% length(letters)) + 1],
+          numericInput("mynumber", "Enter a number", 20),
+          textInput("mytext", "Enter a text", "test"))
+    })
+    
+  }
+))
+shiny::div

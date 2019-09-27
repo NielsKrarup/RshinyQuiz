@@ -15,9 +15,10 @@ library(ggplot2)
 ui <- fluidPage(
   fluidRow(
     column(12,
-           tableOutput(outputId = 'print1'),
-           verbatimTextOutput(outputId = 'Score'),
-           verbatimTextOutput(outputId = 'out3')
+           tableOutput(outputId = 'out1'),
+           tableOutput(outputId = 'out2'),
+           tableOutput(outputId = 'Score')
+
     )
   ),
   # Application title
@@ -63,7 +64,7 @@ ui <- fluidPage(
     column(3,
            ## Selecting the current TRY  (for correcting errors)
            ## Should look up from df_info to see number of tries made.
-           selectInput(inputId = "Cur_Try", label = "TRY",choices = 1:3)
+           uiOutput("TRY")
     )
     
   ),
@@ -71,12 +72,12 @@ fluidRow(
   ### Left Interval: al
   column(
     3,
-    passwordInput("Cur_L", 'Left Interval Quess', placeholder = 'Crypto_PassWord')
-  ),
+    uiOutput("UI_Cur_L")  
+    ),
   ### Right Interval: ar
   column(
     3,
-    passwordInput("Cur_R", 'Right Interval Quess', placeholder = 'Crypto_PassWord')
+    uiOutput("UI_Cur_R")  
   )
   ),
 fluidRow(
@@ -91,7 +92,9 @@ fluidRow(
 
 )
 
-# Define server logic required to draw a histogram
+
+
+# Define server logic
 server <- function(input, output) {
   
   ########### Reactive team names taken from TextInput ####
@@ -121,11 +124,21 @@ server <- function(input, output) {
                         )
 
   #Score Info Data frame, Reactive
-  df_Info <- reactive({
-    data.frame(Team = character(0), 
-                        Question = character(0), 
-                        Try = character(0), 
-                        Score = character(0))
+  df_Table_Scores <-    data.frame(
+                            Team = character(0L), 
+                            Question = character(0L), 
+                            Try = character(0L), 
+                            Points = character(0L)
+                                  )
+
+  
+  output$out2 <- renderTable({
+    input$Cur_Submit
+    
+    df_Table_Scores <- isolate(
+                          rbind(df_Table_Scores, Cur_df_tpm()) 
+                          )
+    df_Table_Scores
   })
   
   #Plot data frame, containing the score after 0 <= n <= 16 tries.
@@ -135,16 +148,15 @@ server <- function(input, output) {
     req(team_names())
         
       data.frame(Team = team_names(),
-                 Answes_spent = rep(0,input$NoTeams),
-                 Score = rep(20480, input$NoTeams))
+                 Answes_spent = rep(0L,input$NoTeams),
+                 Total_Score = rep(20480, input$NoTeams))
     })
   
-  output$print1 <- renderTable({
+  output$out1 <- renderTable({
     df_Plot()
   })
 
 
-  Cur_Info <- data.frame(Team = 'PIK', Question = 2, Try = 1, Answers_Left = 15, Score = 'X')  
   
 
   
@@ -166,7 +178,7 @@ server <- function(input, output) {
   
   #### Interactive UI
   
-  ################################### input UI: team names #####
+  ################################### input UI: team names, for entering team names #####
   output$TeamNamesUI <- renderUI({
 
       lapply(1:input$NoTeams,function(iter){
@@ -174,6 +186,22 @@ server <- function(input, output) {
           textInput(inputId = paste0("team_", iter), label = paste0("Name of team", iter))
         )
       })
+  })
+  
+  ###################### UI: Reset Left and Right entries after submission
+  output$UI_Cur_L <- renderUI({
+    times <- input$Cur_Submit
+    div(id=letters[(times %% length(letters)) + 1],
+        passwordInput("Cur_L", 'Left Interval Quess', placeholder = 'Crypto_PassWord')
+    )
+  })
+  
+  #right
+  output$UI_Cur_R <- renderUI({
+    times <- input$Cur_Submit
+    div(id=letters[(times %% length(letters)) + 1],
+        passwordInput("Cur_R", 'Right Interval Quess', placeholder = 'Crypto_PassWord')
+    )
   })
   
   
@@ -184,7 +212,28 @@ server <- function(input, output) {
     
   })
   
-  output$Score <- renderText({
+  ######################## renderUI - TRY - number of tries used
+  output$TRY <- renderUI({
+    
+    input$Cur_Submit
+ 
+    df_Table_Scores <- rbind(df_Table_Scores, Cur_df_tpm()) 
+ 
+    
+    print(paste0('nrowTable: ', nrow(df_Table_Scores)))
+    
+   if(nrow(df_Table_Scores) == 0){
+    Max_Try <- 1
+   } else Max_try <- 9
+    
+    selectInput(inputId = "Cur_Try", label = "TRY", choices = 1:Max_Try)
+    
+
+  })
+  
+  ############################## SCORE
+  
+  Cur_df_tpm <- reactive({
     
     #Go button 
     if(input$Cur_Submit == 0) return()
@@ -192,7 +241,7 @@ server <- function(input, output) {
     input$Cur_Submit
     
     #Calculate Score, X if not correct
-    Score <- isolate({
+    isolate({
       
       validate(
         need(input$Cur_Team, 'Select a Team!!'),
@@ -203,9 +252,7 @@ server <- function(input, output) {
       #Set the current question being answered and the correct value for ref
       Cur_Question <- input$Cur_Question
       Cur_Answer <-  df_QA[df_QA$question == Cur_Question, ]$answer
-      
-      
-      
+
       Cur_L <- as.numeric(input$Cur_L)
       Cur_R <- as.numeric(input$Cur_R)
       
@@ -214,14 +261,20 @@ server <- function(input, output) {
       Score <- if( Cur_L <= Cur_Answer && Cur_Answer <= Cur_R){
           floor(Cur_R / Cur_L) 
         } else 'X'
-      Score
-    })
-    Score
-  #  isolate( Score() )
-   
 
-
+      
+      Cur_df_tpm <- data.frame(Team = input$Cur_Team, 
+                               Question = input$Cur_Question, 
+                               Try = input$Cur_Try, 
+                               Score = as.character(Score))  
+      
+      
+      Cur_df_tpm
+    }) 
+    
   })
+  
+  #Render the new df_
   
 }
 
