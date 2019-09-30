@@ -47,6 +47,7 @@ df_Table_Scores <- rbind(df_Table_Scores,
 )
 )
 
+df_Table_Scores[df_Table_Scores$Team == "svin",]
 tmp <- df_Table_Scores[df_Table_Scores$Team == "svin" &
                   df_Table_Scores$Question == 8, ]
 tmp

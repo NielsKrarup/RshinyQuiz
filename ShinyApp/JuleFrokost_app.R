@@ -15,9 +15,11 @@ library(ggplot2)
 ui <- fluidPage(
   fluidRow(
     column(12,
-           tableOutput(outputId = 'out1'),
-           tableOutput(outputId = 'out2'),
-           tableOutput(outputId = 'Score')
+           tableOutput(outputId = 'table1'),
+           tableOutput(outputId = 'table2'),
+           tableOutput(outputId = 'table3'),
+           textOutput(outputId = 'text1'),
+           textOutput(outputId = 'text2')
 
     )
   ),
@@ -82,8 +84,9 @@ fluidRow(
   ),
 fluidRow(
   column(6,
-         actionButton(inputId = "Cur_Submit", label = "Submit")
-         ),
+         actionButton(inputId = "Cur_Submit", label = "Submit"),
+         verbatimTextOutput("Validate_Submit")
+  ),
   column(6,
          # Show a plot of the generated distribution
          tableOutput("distPlot3"),
@@ -103,12 +106,29 @@ server <- function(input, output) {
       req(input[[ paste0("team_", i)]]); #require, so that nothing us done untill all names are set
       input[[  paste0("team_", i)]]})
   }) 
+  
 
+  #Validate Submit button
+  #NOTE THIS ONLY VALIDATES LOCALLY FOR THE OUTPUT, REMEMBER TO VALIDATE IN CRITIAL CODE PARTS
+  output$Validate_Submit <- renderText({
+    
+    test <-  eventReactive(input$Cur_Submit,{
+      validate(
+        need(input$Cur_Team,'HEJ Team navn mangler!'),
+        need(input$Cur_L, 'LEFT QUESS MISSING'),
+        need(input$Cur_R, 'RIGHT QUESS MISSING'),
+        need(input$Cur_L <=input$Cur_R, 'LEFT <= RIGHT' )
+      )
+    })
+    
+    test()
+    
+  })
 
-
+  
   #Questions and corresponding answers, fixed! not reactive.
-  df_QA <- data.frame(question = 1:11,
-                      answer = c(
+  df_QA <- data.frame(Question = 1:11,
+                      Answer = c(
                         193, #Snurre snup
                         10918, #Mugabe
                         NA, #3
@@ -124,21 +144,22 @@ server <- function(input, output) {
                         )
 
   #Score Info Data frame, Reactive
-  df_Table_Scores <-    data.frame(
-                            Team = character(0L), 
-                            Question = character(0L), 
-                            Try = character(0L), 
-                            Points = character(0L)
-                                  )
+  values <- reactiveValues()
+  
+  values$df_Table_Scores <- data.frame(stringsAsFactors = FALSE,
+                      ID = numeric(0L),                 
+                      Team = character(0L), 
+                      Question = integer(0L), 
+                      Try = integer(0L), 
+                      Points = character(0L)
+                    )
+  
+
 
   
-  output$out2 <- renderTable({
-    input$Cur_Submit
-    
-    df_Table_Scores <- isolate(
-                          rbind(df_Table_Scores, Cur_df_tpm()) 
-                          )
-    df_Table_Scores
+  output$table1 <- renderTable({
+
+    values$df_Table_Scores
   })
   
   #Plot data frame, containing the score after 0 <= n <= 16 tries.
@@ -152,9 +173,11 @@ server <- function(input, output) {
                  Total_Score = rep(20480, input$NoTeams))
     })
   
-  output$out1 <- renderTable({
+  #Output Plot table
+  output$table2 <- renderTable({
     df_Plot()
   })
+  
 
 
   
@@ -211,47 +234,50 @@ server <- function(input, output) {
     radioButtons(inputId = "Cur_Team", label = "Team", choices = team_names(), inline = TRUE, width = "500px", selected = NA)
     
   })
+
   
   ######################## renderUI - TRY - number of tries used
   output$TRY <- renderUI({
     
     input$Cur_Submit
- 
-    df_Table_Scores <- rbind(df_Table_Scores, Cur_df_tpm()) 
- 
-    
-    print(paste0('nrowTable: ', nrow(df_Table_Scores)))
-    
-   if(nrow(df_Table_Scores) == 0){
-    Max_Try <- 1
-   } else Max_try <- 9
-    
-    selectInput(inputId = "Cur_Try", label = "TRY", choices = 1:Max_Try)
-    
 
+    req(input$Cur_Question)
+
+    print(paste0('nrowTable: ', nrow(values$df_Table_Scores)))
+    
+    tmp_df_subset <- values$df_Table_Scores[values$df_Table_Scores$Question == as.numeric(input$Cur_Question) &
+                                            values$df_Table_Scores$Team == input$Cur_Team, ]
+    
+    print(paste0('nrowTable_subset: ', nrow(tmp_df_subset)))
+    
+   if(nrow(tmp_df_subset) == 0){
+    Max_Try <- 1
+   } else Max_Try <- nrow(tmp_df_subset) + 1
+    
+    selectInput(inputId = "Cur_Try", label = "TRY", choices = 1:Max_Try, selected = Max_Try)
+    
   })
   
   ############################## SCORE
+
   
-  Cur_df_tpm <- reactive({
+    observeEvent( input$Cur_Submit,{
     
     #Go button 
     if(input$Cur_Submit == 0) return()
+
+    validate(
+      need(input$Cur_Team, label = "Provide Team Name "),
+      need(input$Cur_L, label = "Provide Left Quess"),
+      need(input$Cur_R, label = "Provide Right Quess")
+    )
+
     
-    input$Cur_Submit
-    
-    #Calculate Score, X if not correct
-    isolate({
-      
-      validate(
-        need(input$Cur_Team, 'Select a Team!!'),
-        need(input$Cur_L, 'Select Left Interval!'),
-        need(input$Cur_R, 'Select Right Interval!')
-      )
-      
+    #Calculate Score, X if not correct, character
+
       #Set the current question being answered and the correct value for ref
       Cur_Question <- input$Cur_Question
-      Cur_Answer <-  df_QA[df_QA$question == Cur_Question, ]$answer
+      Cur_Answer <-  df_QA[df_QA$Question == Cur_Question, ]$Answer
 
       Cur_L <- as.numeric(input$Cur_L)
       Cur_R <- as.numeric(input$Cur_R)
@@ -262,19 +288,48 @@ server <- function(input, output) {
           floor(Cur_R / Cur_L) 
         } else 'X'
 
+    #Update the score table
       
-      Cur_df_tpm <- data.frame(Team = input$Cur_Team, 
-                               Question = input$Cur_Question, 
-                               Try = input$Cur_Try, 
-                               Score = as.character(Score))  
+      #if the try is not max:
+      tmp_df_subset_Try <- values$df_Table_Scores[values$df_Table_Scores$Question == as.numeric(input$Cur_Question) &
+                                                values$df_Table_Scores$Team == input$Cur_Team, "Try"]
+      print(tmp_df_subset_Try)
       
+      #Correcting 
+      if(max(tmp_df_subset_Try) == input$Cur_Try){ 
+        print("SameTRY")
+        values$df_Table_Scores[values$df_Table_Scores$Question == as.numeric(input$Cur_Question) &
+                                 values$df_Table_Scores$Team == input$Cur_Team &
+                                 values$df_Table_Scores$Try == as.integer(input$Cur_Try)
+                                 , "Points"] <- as.character(Score) 
+      }else{
+              values$df_Table_Scores <- rbind(data.frame(
+                ID = as.numeric(input$Cur_Submit),
+                Team = input$Cur_Team,
+                Question = as.integer(input$Cur_Question),
+                Try = as.integer(input$Cur_Try),
+                Points = as.character(Score)
+              ), 
+              values$df_Table_Scores)
+        }
       
-      Cur_df_tpm
-    }) 
+      #Render the new df_plot /Total score
+      #input$Teams_set_go
+      req(input$NoTeams)
+      req(team_names())
+
+      values$df_plot <- data.frame(Team = team_names(),
+                                   Answes_spent = rep(0L,input$NoTeams),
+                                   Total_Score = rep(20480, input$NoTeams))
+      
+      for(name in team_names()){
+        df_tmp <- values$df_Table_Scores[values$df_Table_Scores$Team == name, ]
+      }
+
     
   })
   
-  #Render the new df_
+
   
 }
 

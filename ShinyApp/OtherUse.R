@@ -4,29 +4,80 @@ ui <- fluidPage(
   fluidRow(
     column(6, 
            tags$h2("Set parameters"),
-           numericInput("NoTeams", "Value", value = 3, min = 1, max = 6, step = 1),
-           radioButtons(inputId = 'radio1',label = 'Radio1Input',choices = c('ko','abe','mus')),
-           radioButtons(inputId = 'radio2',label = 'Radio2Input',choices = c('æble','banan'))
+           numericInput("value", "Value", value = 3, min = 1, max = 6, step = 1),
+           radioButtons(inputId = 'radio1',label = 'Radio1Input',choices = c('ko','abe','mus'), selected = NA),
+           radioButtons(inputId = 'radio2',label = 'Radio2Input',choices = c('æble','banan'), selected = NA),
+           actionButton(inputId = 'Submit', label = 'SubmitButton'),           verbatimTextOutput("Validate_Submit")
+
     ),
     column(6,
-           uiOutput("ui"),
-           textOutput('O1')
+           tableOutput('Test_Table')
     )
   )
 )
 
 server <- function(input, output, session) {
-  output$ui <- renderUI( {
-    tagList(
-      h2("Choose Team"),
-      numericInput("obs1", "Label1", value = 1, min = 0, max = input$NoTeams, step = 1),
-      textInput(inputId = 'text1',label = 'Væl et dyr eller frugt',placeholder = 'ehehe'),
-      selectInput(inputId = 'dyrFrugt',label = "vælg ultimativt",choices = c(input$radio1, input$radio2))
-    )
-  })
-  output$O1 <- renderText(
-    isolate(input$NoTeams^2)
+  
+    df <- reactiveValues()
+
+    df$Testdata <- data.frame(ID = character(0L),
+                              value = character(0L),
+                           Animal = character(0L),
+                           Fruit = character(0L))
+
+
+  
+  #Initial Dataframe
+new_df <- eventReactive(input$Submit,{
+  
+  validate(
+    need(input$radio1,'HEJ!'),
+    need(input$radio2, 'SUP')
   )
+  
+  
+
+
+
+    # #Update of current to whole
+    # df$Testdata = rbind(df$Testdata,
+    #                  data.frame(ID = input$Submit,
+    #                             value = input$value,
+    #                             Animal = input$radio1,
+    #                             Fruit = input$radio2)
+    #                  )
+  })
+  
+  #Current selection
+  output$Test_Table = renderTable({
+    
+    validate(
+      need(input$radio1,'HEJ!'),
+      need(input$radio2, 'SUP')
+    )
+
+    #The current row in df
+    data.frame(ID = input$Submit,
+               value = input$value,
+               Animal = input$radio1,
+               Fruit = input$radio2)
+    })
+  
+  #Combined Table
+  output$Validate_Submit <- renderText({
+    
+    test <-  eventReactive(input$Submit,{
+       validate(
+         need(input$radio1,'HEJ DYR!'),
+         need(input$radio2, 'MANGLER FRUGT')
+       )
+     })
+    
+    test()
+
+    })
+  
+
 }
 
 shinyApp(ui, server)
