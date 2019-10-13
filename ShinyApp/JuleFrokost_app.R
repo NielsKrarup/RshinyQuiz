@@ -129,14 +129,14 @@ server <- function(input, output) {
   #Questions and corresponding answers, fixed! not reactive.
   df_QA <- data.frame(Question = 1:11,
                       Answer = c(
-                        193, #Snurre snup
-                        10918, #Mugabe
+                        193, #1: Snurre snup
+                        10918, #2: Mugabe
                         NA, #3
-                        NA, #4
-                        NA, #5
-                        NA, #6
-                        NA, #7
-                        NA, #8
+                        1015135770, #4: triple Integral
+                        547.2246, #5: US state size prop
+                        NA, #6: Sum of OL records
+                        1554, #7: Dices first occurence of 4 six'es
+                        514, # Lowest Highest Point in South America
                         NA, #9
                         NA, #10
                         NA #11
