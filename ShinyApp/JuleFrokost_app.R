@@ -18,21 +18,12 @@ ui <- fluidPage(
            tableOutput(outputId = 'table1'),
            tableOutput(outputId = 'table2'),
            tableOutput(outputId = 'table3'),
-           textOutput(outputId = 'text1'),
-           textOutput(outputId = 'text2')
-
+           textOutput(outputId = 'text1')
+           #verbatimTextOutput(outputId = 'showInputs'
     )
   ),
   # Application title
-  h1(paste0("JulefrokostQuiz ", 
-            format(
-              as.Date(Sys.Date(), format = "%d/%m/%Y"), "%Y"
-            ),
-            "  -   UCT+1:   ",
-            format(
-              Sys.time(), format = "%H:%M:%S"
-            ))
-  ),
+  uiOutput("appTitleUI"),
   #Number of teams: NoTeams
   numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1,min = 1, max = 6),
   
@@ -98,7 +89,7 @@ fluidRow(
 
 
 # Define server logic
-server <- function(input, output) {
+server <- function(input, output, session) {
   
   ########### Reactive team names taken from TextInput ####
   team_names <- reactive({
@@ -117,7 +108,7 @@ server <- function(input, output) {
         need(input$Cur_Team,'HEJ Team navn mangler!'),
         need(input$Cur_L, 'LEFT QUESS MISSING'),
         need(input$Cur_R, 'RIGHT QUESS MISSING'),
-        need(input$Cur_L <=input$Cur_R, 'LEFT <= RIGHT' )
+        need(as.numeric(input$Cur_L) <= as.numeric(input$Cur_R), 'LEFT <= RIGHT' )
       )
     })
     
@@ -154,57 +145,77 @@ server <- function(input, output) {
                       Points = character(0L)
                     )
   
+  observe({
+    #input$Teams_set_go
+    req(input$NoTeams)
+    req(team_names())
+    
+    values$df_plot <- data.frame(Team = team_names(),
+                                 Answers_Spent = rep(0L,input$NoTeams),
+                                 Total_Score = rep(20480, input$NoTeams))
+  })
 
 
-  
+  #Score table
   output$table1 <- renderTable({
 
     values$df_Table_Scores
   })
   
   #Plot data frame, containing the score after 0 <= n <= 16 tries.
-  df_Plot <- reactive({
-    #input$Teams_set_go
+
+  
+  #Output_Plot table
+  output$table2 <- renderTable({
     req(input$NoTeams)
     req(team_names())
-        
-      data.frame(Team = team_names(),
-                 Answes_spent = rep(0L,input$NoTeams),
-                 Total_Score = rep(20480, input$NoTeams))
-    })
-  
-  #Output Plot table
-  output$table2 <- renderTable({
-    df_Plot()
+    values$df_plot
   })
-  
-
-
   
 
   
   output$distPlot1 <- renderPlot({
-    # generate bins based on input$bins from ui.R
-    x    <- rnorm(100)
-    y  <- x^2 + rnorm(100)/10
-    df <- data.frame(x = x, y = y)
-    
+    #make it dependent on submissions
+    req(team_names())
     # draw the histogram with the specified number of bins
-    ggplot(data = df, aes(x = x, y = y) ) + geom_point()
+    ggplot(data = values$df_plot, aes(x = Answers_Spent, y = Total_Score, group = Team) ) + 
+      geom_line(aes(colour = Team)) + 
+      geom_point(aes(col = Team), size = 2) +
+      scale_x_continuous(breaks = 0:16, limits = c(0,16))
   })
   
-  output$distPlot2 <- renderPlot({
-    plot(cars, pch = input$ans2)
-  })
+
   
 
   
   #### Interactive UI
+  # get all inputs for reference 
+  
+  output$showInputs <- renderPrint({
+    n <- length(input)
+    lapply(X = 1:n, FUN = function(i) input[[paste(i)]])
+    input
+  })
+  
+  # Title UI ----
+  # Application title, with clock 
+  output$appTitleUI <- renderUI({
+    invalidateLater(1000, session)
+    h1(paste0("JulefrokostQuiz ", 
+              format(
+                as.Date(Sys.Date(), format = "%d/%m/%Y"), "%Y"
+              ),
+              "  -   UCT+1:   ",
+              format(
+                Sys.time(), format = "%H:%M:%S"
+              ))
+    )
+  })
   
   ################################### input UI: team names, for entering team names #####
   output$TeamNamesUI <- renderUI({
 
-      lapply(1:input$NoTeams,function(iter){
+      lapply(1:input$NoTeams, function(iter){
         column( floor(12 / input$NoTeams ),
           textInput(inputId = paste0("team_", iter), label = paste0("Name of team", iter))
         )
@@ -241,9 +252,9 @@ server <- function(input, output) {
     
     input$Cur_Submit
 
-    req(input$Cur_Question)
+    req(input$Cur_Question, input$Cur_Team)
 
-    print(paste0('nrowTable: ', nrow(values$df_Table_Scores)))
+    print(paste0('nrow df_Table_Scores: ', nrow(values$df_Table_Scores)))
     
     tmp_df_subset <- values$df_Table_Scores[values$df_Table_Scores$Question == as.numeric(input$Cur_Question) &
                                             values$df_Table_Scores$Team == input$Cur_Team, ]
@@ -258,7 +269,7 @@ server <- function(input, output) {
     
   })
   
-  ############################## SCORE
+  ############################## SCORE ----
 
   
     observeEvent( input$Cur_Submit,{
@@ -269,7 +280,8 @@ server <- function(input, output) {
     validate(
       need(input$Cur_Team, label = "Provide Team Name "),
       need(input$Cur_L, label = "Provide Left Quess"),
-      need(input$Cur_R, label = "Provide Right Quess")
+      need(input$Cur_R, label = "Provide Right Quess"),
+      need(as.numeric(input$Cur_L) <= as.numeric(input$Cur_R), 'must have: LEFT <= RIGHT' )
     )
 
     
@@ -284,7 +296,7 @@ server <- function(input, output) {
       
       if( Cur_L > Cur_R) return(warning("ERROR: LEFT BIGGER THAN RIGHT"))
       
-      Score <- if( Cur_L <= Cur_Answer && Cur_Answer <= Cur_R){
+      Points <- if( Cur_L <= Cur_Answer && Cur_Answer <= Cur_R){
           floor(Cur_R / Cur_L) 
         } else 'X'
 
@@ -293,45 +305,72 @@ server <- function(input, output) {
       #if the try is not max:
       tmp_df_subset_Try <- values$df_Table_Scores[values$df_Table_Scores$Question == as.numeric(input$Cur_Question) &
                                                 values$df_Table_Scores$Team == input$Cur_Team, "Try"]
-      print(tmp_df_subset_Try)
-      
+
       #Correcting 
-      if(max(tmp_df_subset_Try) == input$Cur_Try){ 
+      if(max(c(tmp_df_subset_Try,0)) == input$Cur_Try){ 
         print("SameTRY")
-        values$df_Table_Scores[values$df_Table_Scores$Question == as.numeric(input$Cur_Question) &
+        #override point
+        values$df_Table_Scores[values$df_Table_Scores$Question == as.integer(input$Cur_Question) &
                                  values$df_Table_Scores$Team == input$Cur_Team &
                                  values$df_Table_Scores$Try == as.integer(input$Cur_Try)
-                                 , "Points"] <- as.character(Score) 
+                                 , "Points"] <- as.character(Points) 
       }else{
-              values$df_Table_Scores <- rbind(data.frame(
-                ID = as.numeric(input$Cur_Submit),
+              values$df_Table_Scores <- rbind(
+                data.frame(stringsAsFactors = FALSE,
+                ID = as.integer(input$Cur_Submit),
                 Team = input$Cur_Team,
                 Question = as.integer(input$Cur_Question),
                 Try = as.integer(input$Cur_Try),
-                Points = as.character(Score)
+                Points = as.character(Points)
               ), 
               values$df_Table_Scores)
         }
       
       #Render the new df_plot /Total score
-      #input$Teams_set_go
-      req(input$NoTeams)
-      req(team_names())
 
-      values$df_plot <- data.frame(Team = team_names(),
-                                   Answes_spent = rep(0L,input$NoTeams),
-                                   Total_Score = rep(20480, input$NoTeams))
-      
-      for(name in team_names()){
-        df_tmp <- values$df_Table_Scores[values$df_Table_Scores$Team == name, ]
-      }
 
-    
-  })
+        #Update the total score after submittion, for plotting
+         name <- input$Cur_Team
+         
+           df_tmp_teamsubset <- values$df_Table_Scores[values$df_Table_Scores$Team == name, ]
+           #Answers spent
+           tmp_team_Answers_Spent <- nrow(df_tmp_teamsubset)
+           
+           #The questions answered
+           tmp_Q <- df_tmp_teamsubset$Question
+           print(tmp_Q)
+           
+           tmp_team_numcorrect_counter <- 0
+           tmp_team_sum_points <- 0
+
+           for(k in unique(tmp_Q)){
+
+             print(head(df_tmp_teamsubset[df_tmp_teamsubset$Question == k, "Points"],1))
+             #The latest points received
+             point <- head(df_tmp_teamsubset[df_tmp_teamsubset$Question == k, "Points"],1)
+             
+             if(point != "X"){
+               tmp_team_numcorrect_counter <- tmp_team_numcorrect_counter + 1
+               tmp_team_sum_points <- tmp_team_sum_points + as.numeric(point)
+             }
+             
+           }
+        #Update the total score
+        new_Total_Score <-    (10 + tmp_team_sum_points)*2^(11 - tmp_team_numcorrect_counter )
+        #insert in data_table
+        values$df_plot <- rbind(
+          data.frame(stringsAsFactors = FALSE,
+                     Team = name,
+                     Answers_Spent = tmp_team_Answers_Spent,
+                     Total_Score = new_Total_Score
+                      ),
+          values$df_plot)
+        
+  })#Observe event
   
 
   
-}
+}#server fun end
 
 # Run the application
 shinyApp(ui = ui, server = server)
