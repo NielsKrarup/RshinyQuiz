@@ -6,16 +6,20 @@ days
  
  
  ##################### QUESTION 4  - us states 
- 
-integrate(f = Vectorize(function(x)
+UPNUM <- 3
+INT <- integrate(f = Vectorize(function(x)
   integrate(f = Vectorize(function(y)
-    integrate(function(z) x^y^z,lower = 1, upper = 3)$value
-  ), lower = 1, upper = 3)$value
-),lower = 1, upper = 3) 
+    integrate(function(z) x^y^z,lower = 1, upper = UPNUM)$value
+  ), lower = 1, upper = UPNUM)$value
+),lower = 1, upper = UPNUM) 
 
+3^(3^3)
+1 015 135 770
   
+num <- format(2^(123), scientific = F)
+format(101e7, scientific = F)
 
-
+length(num)
 ##################### QUESTION 5  - us states 
 alaska <- 1481337
 RhoseIsland <- 2707

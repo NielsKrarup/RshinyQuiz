@@ -5,27 +5,24 @@
 # Find out more about building applications with Shiny here:
 #
 #    http://shiny.rstudio.com/
-# Git: SpanskSnaps
+# Git: SomeWhereOverTheRainbow
 
 
 library(ggplot2)
+#Hardcoded values
+Max_No_Guesses <- 16
 #library(plotly)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-  fluidRow(
-    column(12,
-           tableOutput(outputId = 'table1'),
-           tableOutput(outputId = 'table2'),
-           tableOutput(outputId = 'table3'),
-           textOutput(outputId = 'text1')
-           #verbatimTextOutput(outputId = 'showInputs'
-    )
-  ),
+  tags$head(tags$style(".leftAlign{float:left;}")),
+  tabsetPanel(
+  tabPanel("Intro-Setup",
+
   # Application title
   uiOutput("appTitleUI"),
   #Number of teams: NoTeams
-  numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1,min = 1, max = 6),
+  numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1, min = 1, max = 6),
   
   ## For printing
   
@@ -33,8 +30,13 @@ ui <- fluidPage(
   
   fluidRow(
     br(),
-    uiOutput('TeamNamesUI')
+    uiOutput('TeamNamesUI'),
+    br(),
+    imageOutput("image2")
+    
+  )
   ),
+  tabPanel("Submissions - Score",
 
   
   
@@ -45,14 +47,14 @@ ui <- fluidPage(
   fluidRow(
     column(
       6,
-                    ##UI for selecting the team answering.
+      ##UI for selecting the team answering.
       uiOutput("TeamsRadioButtons")
       )
     ),
   fluidRow(
     column(3,
                     ## Selecting the current question being answered
-      selectInput(inputId = "Cur_Question", label = "Question",choices = 1:13)
+      selectInput(inputId = "Cur_Question", label = "Question",choices = 1:11)
       ),
     column(3,
            ## Selecting the current TRY  (for correcting errors)
@@ -77,19 +79,56 @@ fluidRow(
   column(6,
          actionButton(inputId = "Cur_Submit", label = "Submit"),
          verbatimTextOutput("Validate_Submit")
+  )
   ),
-  column(6,
+  fluidRow(
+    column(2,
+           #leader board
+           h2('Leader Board'),
+           tableOutput(outputId = "table3"),br(),
+           #table1 df_table_scores
+           h3('10 latest submissions'),
+           tableOutput(outputId = 'table1')
+           # df_plot table
+           #tableOutput(outputId = 'table2'),
+
+    ),
+    column(8,align = 'left',
+          h3("Plot of score"),
          # Show a plot of the generated distribution
-         tableOutput("distPlot3"),
-         plotOutput(outputId = 'distPlot1',height = 600))
-)
+         plotOutput(outputId = 'distPlot1',height = 600), class = 'leftAlign')
+  )
 
 )
+)
+)
+
 
 
 
 # Define server logic
-server <- function(input, output, session) {
+server <- function(input, output, session){
+  
+  # pics
+  output$image2 <- renderImage({
+    # if (is.null(input$picture))
+    #   return(NULL)
+    
+    if (2 == 1) {
+      return(list(
+        src = "Pics/Rousseau.jpg",
+        contentType = "image/jpeg",
+        alt = "Face"
+      ))
+    } else if (4 == 4) {
+      return(list(
+        src = "Pics/YvesKlein.jpg",
+        filetype = "image/jpeg",
+        alt = "This is a chainring"
+      ))
+    }
+    
+  }, deleteFile = FALSE)
   
   ########### Reactive team names taken from TextInput ####
   team_names <- reactive({
@@ -103,8 +142,13 @@ server <- function(input, output, session) {
   #NOTE THIS ONLY VALIDATES LOCALLY FOR THE OUTPUT, REMEMBER TO VALIDATE IN CRITIAL CODE PARTS
   output$Validate_Submit <- renderText({
     
+    
     test <-  eventReactive(input$Cur_Submit,{
+      
+      tmp <-  max(values$df_plot[values$df_plot$Team == input$Cur_Team, "Answers_Spent"],0)
+      
       validate(
+        need(tmp <= Max_No_Guesses-1, "ALL Answers Spent"),
         need(input$Cur_Team,'HEJ Team navn mangler!'),
         need(input$Cur_L, 'LEFT QUESS MISSING'),
         need(input$Cur_R, 'RIGHT QUESS MISSING'),
@@ -122,20 +166,22 @@ server <- function(input, output, session) {
                       Answer = c(
                         193, #1: Snurre snup
                         10918, #2: Mugabe
-                        NA, #3
+                        2, #3. Ringo Starr
                         1015135770, #4: triple Integral
-                        547.2246, #5: US state size prop
-                        NA, #6: Sum of OL records
+                        547.2, #5: US state size prop
+                        53, #6: Fastest Final CL goal.
                         1554, #7: Dices first occurence of 4 six'es
-                        514, # Lowest Highest Point in South America
-                        NA, #9
-                        NA, #10
-                        NA #11
+                        514, #8: Lowest Highest Point in South America
+                        1876, #9: Stram Kurs vs Kristen 
+                        210, #10:Atomprøvesprængning
+                        1047000 #Hoizer Spotify
                                 ) 
                         )
 
   #Score Info Data frame, Reactive
   values <- reactiveValues()
+  
+  values$Max_Try <- numeric(0L)
   
   values$df_Table_Scores <- data.frame(stringsAsFactors = FALSE,
                       ID = numeric(0L),                 
@@ -158,8 +204,9 @@ server <- function(input, output, session) {
 
   #Score table
   output$table1 <- renderTable({
-
-    values$df_Table_Scores
+    #Latest scores
+    df <- values$df_Table_Scores
+    head(df, 10)
   })
   
   #Plot data frame, containing the score after 0 <= n <= 16 tries.
@@ -172,16 +219,31 @@ server <- function(input, output, session) {
     values$df_plot
   })
   
+  #Leader board
+  output$table3 <- renderTable({
+    req(input$NoTeams)
+    req(team_names())
+    
+    leader_table <- values$df_plot[match(unique(values$df_plot$Team),values$df_plot$Team), ]
+    leader_table <- leader_table[order(leader_table$Total_Score, decreasing = F),]
+    
+    leader_table
+    
+
+  })
+  
 
   
   output$distPlot1 <- renderPlot({
     #make it dependent on submissions
     req(team_names())
     # draw the histogram with the specified number of bins
-    ggplot(data = values$df_plot, aes(x = Answers_Spent, y = Total_Score, group = Team) ) + 
+    g <- ggplot(data = values$df_plot, aes(x = Answers_Spent, y = Total_Score, group = Team) ) + 
       geom_line(aes(colour = Team)) + 
-      geom_point(aes(col = Team), size = 2) +
+      geom_point(aes(col = Team, shape = Team), size = 2) +
       scale_x_continuous(breaks = 0:16, limits = c(0,16))
+    #supress only one group warning,(when only one team has been made)
+    suppressWarnings(g)
   })
   
 
@@ -189,14 +251,7 @@ server <- function(input, output, session) {
 
   
   #### Interactive UI
-  # get all inputs for reference 
-  
-  output$showInputs <- renderPrint({
-    n <- length(input)
-    lapply(X = 1:n, FUN = function(i) input[[paste(i)]])
-    input
-  })
-  
+
   # Title UI ----
   # Application title, with clock 
   output$appTitleUI <- renderUI({
@@ -254,18 +309,14 @@ server <- function(input, output, session) {
 
     req(input$Cur_Question, input$Cur_Team)
 
-    print(paste0('nrow df_Table_Scores: ', nrow(values$df_Table_Scores)))
-    
     tmp_df_subset <- values$df_Table_Scores[values$df_Table_Scores$Question == as.numeric(input$Cur_Question) &
                                             values$df_Table_Scores$Team == input$Cur_Team, ]
     
-    print(paste0('nrowTable_subset: ', nrow(tmp_df_subset)))
-    
    if(nrow(tmp_df_subset) == 0){
-    Max_Try <- 1
-   } else Max_Try <- nrow(tmp_df_subset) + 1
+    values$Max_Try <- 1
+   } else values$Max_Try <- nrow(tmp_df_subset) + 1
     
-    selectInput(inputId = "Cur_Try", label = "TRY", choices = 1:Max_Try, selected = Max_Try)
+    selectInput(inputId = "Cur_Try", label = "TRY", choices = 1:values$Max_Try, selected = values$Max_Try)
     
   })
   
@@ -276,8 +327,11 @@ server <- function(input, output, session) {
     
     #Go button 
     if(input$Cur_Submit == 0) return()
+      
+      tmp_max_ans <-  max(values$df_plot[values$df_plot$Team == input$Cur_Team, "Answers_Spent"],0)
 
     validate(
+      need(tmp_max_ans <= Max_No_Guesses - 1 , 'All ans spent No2'),
       need(input$Cur_Team, label = "Provide Team Name "),
       need(input$Cur_L, label = "Provide Left Quess"),
       need(input$Cur_R, label = "Provide Right Quess"),
@@ -294,27 +348,37 @@ server <- function(input, output, session) {
       Cur_L <- as.numeric(input$Cur_L)
       Cur_R <- as.numeric(input$Cur_R)
       
-      if( Cur_L > Cur_R) return(warning("ERROR: LEFT BIGGER THAN RIGHT"))
-      
       Points <- if( Cur_L <= Cur_Answer && Cur_Answer <= Cur_R){
           floor(Cur_R / Cur_L) 
         } else 'X'
 
     #Update the score table
       
-      #if the try is not max:
+      #Get try. for if the try is not max:
       tmp_df_subset_Try <- values$df_Table_Scores[values$df_Table_Scores$Question == as.numeric(input$Cur_Question) &
                                                 values$df_Table_Scores$Team == input$Cur_Team, "Try"]
 
       #Correcting 
-      if(max(c(tmp_df_subset_Try,0)) == input$Cur_Try){ 
-        print("SameTRY")
-        #override point
+      #input.cur_try will always we ++1 of the tmp_df_subset_try
+      if(max(c(tmp_df_subset_Try,0)) >= input$Cur_Try){ 
+        #override point of try and remove "above"
         values$df_Table_Scores[values$df_Table_Scores$Question == as.integer(input$Cur_Question) &
                                  values$df_Table_Scores$Team == input$Cur_Team &
                                  values$df_Table_Scores$Try == as.integer(input$Cur_Try)
                                  , "Points"] <- as.character(Points) 
+        
+        #remove >= cur_try, recall iterates from above i df
+        index_rm <- (values$df_Table_Scores$Question == as.integer(input$Cur_Question) &
+                    values$df_Table_Scores$Team == input$Cur_Team &
+                    values$df_Table_Scores$Try > as.integer(input$Cur_Try))
+        #if index_rm is only false i.e. only most recent
+        if(any(index_rm)){
+          values$df_Table_Scores <- values$df_Table_Scores[!index_rm,]
+        }
+          
       }else{
+        #no correction
+        #ad new value to df
               values$df_Table_Scores <- rbind(
                 data.frame(stringsAsFactors = FALSE,
                 ID = as.integer(input$Cur_Submit),
@@ -328,24 +392,22 @@ server <- function(input, output, session) {
       
       #Render the new df_plot /Total score
 
-
         #Update the total score after submittion, for plotting
          name <- input$Cur_Team
          
+         #Subset data by current team
            df_tmp_teamsubset <- values$df_Table_Scores[values$df_Table_Scores$Team == name, ]
-           #Answers spent
+           #Answers spent, this will be lower after correction
            tmp_team_Answers_Spent <- nrow(df_tmp_teamsubset)
            
            #The questions answered
            tmp_Q <- df_tmp_teamsubset$Question
-           print(tmp_Q)
-           
+
            tmp_team_numcorrect_counter <- 0
            tmp_team_sum_points <- 0
 
            for(k in unique(tmp_Q)){
 
-             print(head(df_tmp_teamsubset[df_tmp_teamsubset$Question == k, "Points"],1))
              #The latest points received
              point <- head(df_tmp_teamsubset[df_tmp_teamsubset$Question == k, "Points"],1)
              
@@ -358,13 +420,35 @@ server <- function(input, output, session) {
         #Update the total score
         new_Total_Score <-    (10 + tmp_team_sum_points)*2^(11 - tmp_team_numcorrect_counter )
         #insert in data_table
-        values$df_plot <- rbind(
-          data.frame(stringsAsFactors = FALSE,
-                     Team = name,
-                     Answers_Spent = tmp_team_Answers_Spent,
-                     Total_Score = new_Total_Score
-                      ),
-          values$df_plot)
+        #If correction, i.e. MaxTru != Cur - answers spent is not <= prior number of answeres spent
+        if(input$Cur_Try != values$Max_Try ) {
+          
+          #override point of try and remove "above"
+          values$df_plot[values$df_plot$Team == name &
+                                   values$df_plot$Answers_Spent == tmp_team_Answers_Spent
+                                 , "Total_Score"] <- new_Total_Score
+          
+          #remove >= tmp_team_Answers_Spent, recall iterates from above i df
+          index_rm <- (values$df_plot$Team == name &
+                         values$df_plot$Answers_Spent > tmp_team_Answers_Spent)
+          #if index_rm is only false i.e. only most recent
+          if(any(index_rm)){
+            values$df_plot <- values$df_plot[!index_rm,]
+          }
+          
+          #--------- normal case
+          
+        } else{
+          values$df_plot <- rbind(
+            data.frame(stringsAsFactors = FALSE,
+                       Team = name,
+                       Answers_Spent = tmp_team_Answers_Spent,
+                       Total_Score = new_Total_Score
+            ),
+            values$df_plot)
+          }
+        
+
         
   })#Observe event
   
