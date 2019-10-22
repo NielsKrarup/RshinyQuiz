@@ -15,7 +15,6 @@ Max_No_Guesses <- 16
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-  tags$head(tags$style(".leftAlign{float:left;}")),
   tabsetPanel(
   tabPanel("Intro-Setup",
 
