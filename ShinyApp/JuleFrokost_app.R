@@ -29,12 +29,19 @@ ui <- fluidPage(
   
   fluidRow(
     br(),
-    uiOutput('TeamNamesUI'),
-    br(),
-    imageOutput("image2")
-    
-  )
+    uiOutput('TeamNamesUI')
   ),
+  fluidRow(
+    br(),
+    column(10,
+           imageOutput("image2")
+           ),
+    column(2,
+           p("Yves Klein"),
+           p('Anthropometrie Le Buffle (ANT 93)')
+           )
+  )
+  ),#Tap
   tabPanel("Submissions - Score",
 
   
@@ -75,10 +82,13 @@ fluidRow(
   )
   ),
 fluidRow(
-  column(6,
+  column(3,
          actionButton(inputId = "Cur_Submit", label = "Submit"),
          verbatimTextOutput("Validate_Submit")
-  )
+  ),
+  column(3,
+         actionButton(inputId = "Cur_Delete", label = "Delete Selected")
+         )
   ),
   fluidRow(
     column(2,
@@ -112,18 +122,23 @@ server <- function(input, output, session){
   output$image2 <- renderImage({
     # if (is.null(input$picture))
     #   return(NULL)
+    invalidateLater(1000, session)
+    #timestamp <- as.integer(Sys.time()) %% 100 
+    sample <- sample(0:40,1)
     
-    if (2 == 1) {
+    if ( sample == 0) {
       return(list(
-        src = "Pics/Rousseau.jpg",
+        src = "Pics/Thyge.jpg",
         contentType = "image/jpeg",
-        alt = "Face"
+        alt = "Face",
+        style="display: block; margin-left: auto; margin-right: auto;"
       ))
-    } else if (4 == 4) {
+    } else {
       return(list(
         src = "Pics/YvesKlein.jpg",
         filetype = "image/jpeg",
-        alt = "This is a chainring"
+        alt = "This is a chainring",
+        style="display: block; margin-left: auto; margin-right: auto;"
       ))
     }
     
@@ -211,7 +226,7 @@ server <- function(input, output, session){
   #Plot data frame, containing the score after 0 <= n <= 16 tries.
 
   
-  #Output_Plot table
+  #Output_Plot table, not shown
   output$table2 <- renderTable({
     req(input$NoTeams)
     req(team_names())
@@ -318,9 +333,73 @@ server <- function(input, output, session){
     selectInput(inputId = "Cur_Try", label = "TRY", choices = 1:values$Max_Try, selected = values$Max_Try)
     
   })
-  
-  ############################## SCORE ----
 
+  
+  #Delete 
+  
+  observeEvent(input$Cur_Delete,{
+    
+    if(input$Cur_Delete == 0) return()
+    
+    #Get the Row in score data frame 
+    #remove >= cur_try, recall iterates from above i df
+    index_rm <- (values$df_Table_Scores$Question == as.integer(input$Cur_Question) &
+                   values$df_Table_Scores$Team == input$Cur_Team &
+                   values$df_Table_Scores$Try == as.integer(input$Cur_Try))
+    #if index_rm is only false i.e. only most recent
+    if(any(index_rm)){
+      values$df_Table_Scores <- values$df_Table_Scores[!index_rm,]
+    }else warning('Some delete error , could not finde row to remove')
+    
+    #Update plot
+    
+    #Render the new df_plot / Total score
+    
+    #Update the total score after submittion, for plotting
+    name <- input$Cur_Team
+    
+    #Subset data by current team
+    df_tmp_teamsubset <- values$df_Table_Scores[values$df_Table_Scores$Team == name, ]
+    #Answers spent, this will be ONE lower after deletion
+    tmp_team_Answers_Spent <- nrow(df_tmp_teamsubset)
+    
+    #The questions answered
+    tmp_Q <- df_tmp_teamsubset$Question
+    
+    tmp_team_numcorrect_counter <- 0
+    tmp_team_sum_points <- 0
+    
+    for(k in unique(tmp_Q)){
+      
+      #The latest points received
+      point <- head(df_tmp_teamsubset[df_tmp_teamsubset$Question == k, "Points"],1)
+      
+      if(point != "X"){
+        tmp_team_numcorrect_counter <- tmp_team_numcorrect_counter + 1
+        tmp_team_sum_points <- tmp_team_sum_points + as.numeric(point)
+      }
+      
+    }
+    #Update the total score
+    new_Total_Score <-    (10 + tmp_team_sum_points)*2^(11 - tmp_team_numcorrect_counter )
+    #insert in data_table
+    
+    #override point of try and remove "above"
+      values$df_plot[values$df_plot$Team == name &
+                       values$df_plot$Answers_Spent == tmp_team_Answers_Spent
+                     , "Total_Score"] <- new_Total_Score
+      
+      #remove >= tmp_team_Answers_Spent, recall iterates from above i df
+      index_rm <- (values$df_plot$Team == name &
+                     values$df_plot$Answers_Spent == tmp_team_Answers_Spent + 1)
+      #if index_rm is only false i.e. only most recent
+      if(any(index_rm)){
+        values$df_plot <- values$df_plot[!index_rm,]
+      } else warning(' Delete error 2')
+  
+  })
+    
+  ############################## SCORE ----
   
     observeEvent( input$Cur_Submit,{
     
@@ -419,6 +498,7 @@ server <- function(input, output, session){
         #Update the total score
         new_Total_Score <-    (10 + tmp_team_sum_points)*2^(11 - tmp_team_numcorrect_counter )
         #insert in data_table
+        
         #If correction, i.e. MaxTru != Cur - answers spent is not <= prior number of answeres spent
         if(input$Cur_Try != values$Max_Try ) {
           
