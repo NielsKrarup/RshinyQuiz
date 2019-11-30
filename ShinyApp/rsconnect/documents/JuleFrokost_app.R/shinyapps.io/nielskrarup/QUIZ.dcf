@@ -5,9 +5,9 @@ account: nielskrarup
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1323476
-bundleId: 2533922
+bundleId: 2628223
 url: https://nielskrarup.shinyapps.io/QUIZ/
-when: 1571954321.53261
+when: 1575120983.92301
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: OtherUse.R|SandBox1.R|Pics/Rousseau.jpg
