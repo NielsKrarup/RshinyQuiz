@@ -5,7 +5,7 @@
 # Find out more about building applications with Shiny here:
 #
 #    http://shiny.rstudio.com/
-# Git: ScoobyDoo
+# Git: v1.0
 
 
 library(ggplot2)
