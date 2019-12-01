@@ -5,7 +5,7 @@
 # Find out more about building applications with Shiny here:
 #
 #    http://shiny.rstudio.com/
-# Git: ScoobyDoo
+# Git: v1.0
 
 
 library(ggplot2)
@@ -22,6 +22,7 @@ ui <- fluidPage(
   uiOutput("appTitleUI"),
   #Number of teams: NoTeams
   numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1, min = 1, max = 6),
+  radioButtons(inputId = "year_questions", label = "Questions", choices = c("2018", "2019"), selected = "2019"),
   
   ## For printing
   
@@ -175,22 +176,6 @@ server <- function(input, output, session){
   })
 
   
-  #Questions and corresponding answers, fixed! not reactive.
-  df_QA <- data.frame(Question = 1:11,
-                      Answer = c(
-                        193, #1: Snurre snup
-                        10918, #2: Mugabe
-                        2, #3. Ringo Starr
-                        1015135770, #4: triple Integral
-                        547.2, #5: US state size prop
-                        53, #6: Fastest Final CL goal.
-                        1554, #7: Dices first occurence of 4 six'es
-                        514, #8: Lowest Highest Point in South America
-                        1876, #9: Stram Kurs vs Kristen 
-                        210, #10:Atomprøvesprængning
-                        1047000 #Hoizer Spotify
-                                ) 
-                        )
 
   #Score Info Data frame, Reactive
   values <- reactiveValues()
@@ -415,6 +400,44 @@ server <- function(input, output, session){
       need(input$Cur_R, label = "Provide Right Quess"),
       need(as.numeric(input$Cur_L) <= as.numeric(input$Cur_R), 'must have: LEFT <= RIGHT' )
     )
+    
+    #Questions and corresponding answers, fixed! not reactive.
+    switch(input$year_questions,
+           "2019" = {
+             df_QA <- data.frame(Question = 1:11,
+                                 Answer = c(
+                                   193, #1: Snurre snup
+                                   10918, #2: Mugabe
+                                   2, #3. Ringo Starr
+                                   1015135770, #4: triple Integral
+                                   547.2, #5: US state size prop
+                                   53, #6: Fastest Final CL goal.
+                                   1554, #7: Dices first occurence of 4 six'es
+                                   514, #8: Lowest Highest Point in South America
+                                   1876, #9: Stram Kurs vs Kristen 
+                                   210, #10:Atomprøvesprængning
+                                   1047000000 #Hoizer Spotify
+                                 ) 
+             )
+           },
+           "2018" = {
+             df_QA <- data.frame(Question = 1:11,
+                                 Answer = c(
+                                   193, #1: Snurre snup
+                                   10918, #2: Mugabe
+                                   2, #3. Ringo Starr
+                                   1015135770, #4: triple Integral
+                                   547.2, #5: US state size prop
+                                   53, #6: Fastest Final CL goal.
+                                   1554, #7: Dices first occurence of 4 six'es
+                                   514, #8: Lowest Highest Point in South America
+                                   1876, #9: Stram Kurs vs Kristen 
+                                   210, #10:Atomprøvesprængning
+                                   1047000000 #Hoizer Spotify
+                                 ) 
+             )
+           })
+    
 
     
     #Calculate Score, X if not correct, character
