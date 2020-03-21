@@ -232,7 +232,7 @@ server <- function(input, output, session){
   })
   
 
-  
+#### plot of scores ----  
   output$distPlot1 <- renderPlot({
     #make it dependent on submissions
     req(team_names())
@@ -240,7 +240,11 @@ server <- function(input, output, session){
     g <- ggplot(data = values$df_plot, aes(x = Answers_Spent, y = Total_Score, group = Team) ) + 
       geom_line(aes(colour = Team)) + 
       geom_point(aes(col = Team, shape = Team), size = 2) +
-      scale_x_continuous(breaks = 0:16, limits = c(0,16))
+      scale_x_continuous(breaks = 0:16, limits = c(0,16)) +
+      theme(legend.title = element_text(size = 50),
+            legend.text=element_text(size=30),
+            legend.key.size = unit(6, "line")) + 
+      guides(shape = guide_legend(override.aes = list(size = 5)))
     #supress only one group warning,(when only one team has been made)
     suppressWarnings(g)
   })
