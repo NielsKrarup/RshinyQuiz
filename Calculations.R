@@ -91,7 +91,7 @@ tmp <- data.frame(Argentina = 6960 ,
            Suriname = 1230 ,
            Uruguay = 514 ,
            Venezuela = 4978 )
-min(tmp[1,])
+tmp[,which.min(tmp)]
 
 # FOR APP -----------------------------------------------------------------
 
