@@ -1,13 +1,12 @@
-name: QUIZ
-title: QUIZ
+name: Quiz
+title: Quiz
 username:
 account: nielskrarup
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1323476
-bundleId: 2922959
+bundleId: 2931952
 url: https://nielskrarup.shinyapps.io/QUIZ/
-when: 1585148773.81509
+when: 1585315285.65314
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: OtherUse.R|SandBox1.R|Pics/Rousseau.jpg
