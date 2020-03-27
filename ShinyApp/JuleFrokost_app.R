@@ -429,17 +429,17 @@ server <- function(input, output, session){
            "2018" = {
              df_QA <- data.frame(Question = 1:11,
                                  Answer = c(
-                                   193, #1: Snurre snup
-                                   10918, #2: Mugabe
-                                   2, #3. Ringo Starr
-                                   1015135770, #4: triple Integral
-                                   547.2, #5: US state size prop
-                                   53, #6: Fastest Final CL goal.
-                                   1554, #7: Dices first occurence of 4 six'es
-                                   514, #8: Lowest Highest Point in South America
-                                   1876, #9: Stram Kurs vs Kristen 
-                                   210, #10:Atomprøvesprængning
-                                   1047000000 #Hoizer Spotify
+                                   683, #1: LOTR
+                                   17, #2: Russia Border
+                                   86100, #3. Tanks
+                                   38, #4: Digits in 2^123
+                                   15748000, #5: Painting, Hammershøi
+                                   1267069, #6: På sporet af den tabte tid
+                                   74, #7: FIFA FORØYA
+                                   5757, #8: Le tour
+                                   144, #9: youtube > billion
+                                   169, #10: brownian motion
+                                   149597870700 #11: AU in meters
                                  ) 
              )
            })

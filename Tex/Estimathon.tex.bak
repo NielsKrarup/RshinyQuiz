@@ -1,0 +1,66 @@
+\documentclass[10pt,a4paper]{article}       
+\usepackage[utf8]{inputenc}  
+\usepackage{amsthm,amsmath,amssymb,amsfonts} 
+\usepackage[danish]{babel} 
+\usepackage{xfrac} 
+\usepackage{graphicx}   
+\usepackage{fancyhdr}	
+\usepackage[margin=1.10in]{geometry} 
+\pagestyle{fancy}
+\newcommand{\us}[1]{\underset{=}{#1}} 
+\newcommand{\ul}[1]{\underline{#1}} 
+\lhead{Carpe Diem. Memento Mori. YOLO. You miss all of the shots you don't take.} 
+\chead{}     
+\rhead{\today} 
+\parindent 0cm 
+\linespread{1.1}
+\begin{document} 
+\section*{Regeln}
+I har 25 minutter til at indlevere svar. Der er i alt 11 spørgsmål, korrekte svar er altid et positivt tal.
+Et gæt indsendes i form af et interval på formen:
+$$
+[\text{Min}, \text{Max}]
+$$
+Bemærk at begge endepunkter er inkluderet. Hvert hold har 16 gæt, hvorfor der kan gættes flere gange på visse spørgsmål. Svar kan indsendes løbende. 
+Et holds score er givet ved
+$$
+\left( 10 + \sum_{\substack{i : korrekte \\ gæt}} \left\lfloor \frac{\text{Max}_i}{\text{min}_i} \right\rfloor \right) \cdot 2^{11 - \left(\#\text{Korrekte Gæt}\right)}
+$$
+Hvorfor alle hold ved spillets start starter på $10\cdot 2^{11} = 20480$ point. \\
+Holdet med \textbf{laveste} score når tiden er gået vinder.\\
+Når et gæt indsendes skal der tydeligt fremgå:\\
+$\bullet$ HOLD\\
+$\bullet$ SPØRGSMÅL\\
+$\bullet$ INTERVALGÆT.
+
+Efter indsendelse vil holdet kunne se hvorvidt deres gæt er korrekte og i så fald gættets værdi i summen, samt den samlede score. Scoren vil altid opdateres ved nye gæt, også selvom disse skulle forværre scoren.
+
+For at kunne holde styr på tiden, vil der være musik mens spillet kører, sidste sang vil være The Prodigy med nummeret Voodoo People, som varer 3:30 min.
+
+\newpage
+\section*{Fragen}
+\begin{enumerate}
+  \item Samlede længde af alle 3 Ringenes Herre film i extended edition i minutter
+  
+  \item Længden af den korteste af Ruslands landegrænser i km.
+
+  \item Sovjetiske Tanks mistet i WWII. "beyond economic repair or no longer serviceable"
+
+  \item Antal digits i tallet $2^{123}$
+
+  \item Højeste salgspris for et dansk maleri i DKK på salgstispunktet
+
+  \item Antal ord i originalversionen af À la recherche du temps perdu af Marcel Proust
+
+  \item Højeste FIFA-rangering af det Færøerske Herre Fodboldlandshold
+
+  \item Vindertiden ved Tour de France 1996 (BJARNE!!!) i Minutter 
+
+  \item Antal youtube videoer med mere end 1.000.000.000 views per 30Nov2018
+
+  \item Lad $B_t$ være st. brownsk bevægelse, definer  $\tau = \inf\{t>0 : B_t \in (-\infty ,-13) \cup (13, \infty ) \}$ \\ hvad er $\mathbb{E}\left[\tau\right]$?
+ 
+  \item Gnm. Afstand fra solen til jorden i meter
+\end{enumerate}
+
+\end{document}

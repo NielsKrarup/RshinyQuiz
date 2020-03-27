@@ -1,0 +1,81 @@
+\documentclass[10pt,a4paper]{article}       
+\usepackage[utf8]{inputenc}  
+\usepackage{amsthm,amsmath,amssymb,amsfonts,bbm} 
+\usepackage[danish]{babel} 
+\usepackage{xfrac} 
+\usepackage{graphicx}   
+\usepackage{fancyhdr}	
+\usepackage[margin=1.10in]{geometry} 
+\pagestyle{fancy}
+\newcommand{\us}[1]{\underset{=}{#1}} 
+\newcommand{\ul}[1]{\underline{#1}} 
+\lhead{Carpe Diem. Memento Mori. YOLO. You miss all of the shots you don't take.} 
+\chead{}     
+\rhead{\today} 
+\parindent 0cm 
+\linespread{1.1}
+\begin{document} 
+\section*{Regeln}
+You have 25 minutes to submit answers. There are 11 questions and a correct answer is always a positive real number i.e. question $i$ has answer $\theta_i \in \mathbb{R}_+$ for $i = 1,2,\ldots,11$. Submissions are made in the form of an interval:
+$$
+[\text{Min}, \text{Max}]
+$$
+Note that both endpoints are included. Each team has 16 guesses hence multiple submissions for questions is possible altough the score will always be based on the latest submissions to the questions.
+Submissions can be made throughout the quiz. 
+The team's score is given by the formula:
+$$
+\left( 10 + \sum_{\substack{i : \text{Min}_i \leq \theta_i \leq \text{Max}_i}} \left\lfloor \frac{\text{Max}_i}{\text{Min}_i} \right\rfloor \right) \cdot 2^{11 - \# \text{correct guesses} }
+$$
+Where $\lfloor \cdot \rfloor$ is the floor function.\\ \\
+Hence, at the beginning of the quiz all teams have a score of
+$(10 + 0)\cdot 2^{11-0} = 20480$ points. \\
+When the time is up, the team with the \textbf{lowest} score wins.\\
+When submitting an interval it must clearly state:\\ \\
+$\bullet$ Team\\
+$\bullet$ Question\\
+$\bullet$ Interval. \\ \\
+Using scientific notation is allowed but must follow the conventions of R e.g.:\\
+100 = 1e2 \\
+93.000 = 93e3 \\
+1.010.000.000 = 101e7 \\
+etc.
+
+After submission the team (and everybody else) will be able to see whether the guess is correct or not and if so the value of the answer in the sum i.e. $\lfloor \text{Max}_i / \text{Min}_i \rfloor$ as well as the updated total score.
+
+\newpage
+\section*{Fragen}
+\begin{enumerate}
+  \item Antal sendte afsnit af \textit{Snurre Snups søndagsklub.}
+  
+ \item Antal dage Robert Mugabe besad embedet som Zimbabwes præsident.
+
+  \item Antal Beatles sange hvor Ringo Starr er krediteret som "sole composer".
+
+  \item 
+  $$
+  \int_{1}^{3}\int_{1}^{3}\int_{1}^{3} x^{y^z}\,dx\,dy\,dz
+  $$ 
+  
+  \item Hvor mange gange større end den mindste stat, er den største stat i USA (af USAs 50 stater, målt på land-areal) ?
+  
+  \item Hurtigst scorede mål i sekunder i en Champions League Finale, siden turneringens start (den gang kaldt Den Europæiske Mesterholdsturnering) i 1955-56 sæsonen. 
+
+\item Lad $X_1,X_2,...$ være en iid følge af stokastiske variable, $X_1 \sim Unif\left(\{1,2,3,4,5,6\}\right)$.\\
+Definer 
+$$
+\tau = \inf\{n \geq 4: \, X_{n-3}=X_{n-2} = X_{n-1} = X_n = 6 \}
+$$
+Hvad er $\mathbb{E}(\tau)$?
+\item Højden i meter af højeste punkt i landet ( sovereign state ) med laveste højeste punkt i Sydamerika. 
+
+
+\item Hvor mange flere stemmer fik Stram Kurs end Kristen Demokraterne ved Folketingsvalget 2019?
+
+\item Antal atomprøvesprængninger udført af Frankrig. 
+
+\item Antal Streamninger af "Take Me to Church"	af Hozier på Spotify pr. 22 Oktober 2019.
+
+
+
+\end{enumerate}
+\end{document}
