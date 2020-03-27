@@ -92,7 +92,7 @@ fluidRow(
          )
   ),
   fluidRow(
-    column(2,
+    column(3,
            #leader board
            h2('Leader Board'),
            tableOutput(outputId = "table3"),br(),
@@ -103,8 +103,8 @@ fluidRow(
            #tableOutput(outputId = 'table2'),
 
     ),
-    column(8,align = 'left',
-          h3("Plot of score"),
+    column(offset = 1, 8,align = 'left',
+          h1("Plot of score"),
          # Show a plot of the generated distribution
          plotOutput(outputId = 'distPlot1',height = 600), class = 'leftAlign')
   )
@@ -232,15 +232,21 @@ server <- function(input, output, session){
   })
   
 
-  
+#### plot of scores ----  
   output$distPlot1 <- renderPlot({
     #make it dependent on submissions
     req(team_names())
     # draw the histogram with the specified number of bins
     g <- ggplot(data = values$df_plot, aes(x = Answers_Spent, y = Total_Score, group = Team) ) + 
-      geom_line(aes(colour = Team)) + 
-      geom_point(aes(col = Team, shape = Team), size = 2) +
-      scale_x_continuous(breaks = 0:16, limits = c(0,16))
+      geom_line(aes(colour = Team),size = 2) + 
+      geom_point(aes(col = Team, shape = Team), size = 3) +
+      scale_x_continuous(breaks = 0:16, limits = c(0,16)) +
+      theme(axis.title = element_text(size = 30),
+              axis.text = element_text(size = 20),
+            legend.title = element_text(size = 50),
+            legend.text=element_text(size=30),
+            legend.key.size = unit(6, "line")) + 
+      guides(shape = guide_legend(override.aes = list(size = 5)))
     #supress only one group warning,(when only one team has been made)
     suppressWarnings(g)
   })
