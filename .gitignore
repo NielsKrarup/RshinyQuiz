@@ -3,5 +3,5 @@
 .RData
 .Ruserdata
 test_app.R
-*.synctex.gz
-*.log
+.synctex.gz
+.log

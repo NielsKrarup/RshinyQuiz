@@ -125,7 +125,7 @@ server <- function(input, output, session){
     #   return(NULL)
     invalidateLater(1000, session)
     #timestamp <- as.integer(Sys.time()) %% 100 
-    sample <- sample(0:100,1)
+    sample <- sample(0:10,1)
     
     if ( sample == 0) {
       return(list(
