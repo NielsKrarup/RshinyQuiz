@@ -22,7 +22,7 @@ ui <- fluidPage(
   uiOutput("appTitleUI"),
   #Number of teams: NoTeams
   numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1, min = 1, max = 6),
-  radioButtons(inputId = "year_questions", label = "Questions", choices = c("2018", "2019"), selected = "2019"),
+  radioButtons(inputId = "year_questions", label = "Questions", choices = c("2018", "2019", "2020"), selected = "2019"),
   
   ## For printing
   
