@@ -409,6 +409,26 @@ server <- function(input, output, session){
     
     #Questions and corresponding answers, fixed! not reactive.
     switch(input$year_questions,
+           "2020" = {
+             df_QA <- data.frame(Question = 1:11,
+                                 Answer = c(
+                                   #Jeg sværger, hvis nogen er gået ind på GIT
+                                   #For at lure svarene, så har man ingen ære.
+                                   776.6, #1: Guernica
+                                   999, #2: 
+                                   999, #3.
+                                   999, #4: 
+                                   999, #5. 
+                                   999, #6: 
+                                   999, #7. 
+                                   999, #8: 
+                                   999, #9.
+                                   999, #10: 
+                                   999  #11. 
+                                 ) 
+             )
+           },
+           
            "2019" = {
              df_QA <- data.frame(Question = 1:11,
                                  Answer = c(
