@@ -22,7 +22,7 @@ ui <- fluidPage(
   uiOutput("appTitleUI"),
   #Number of teams: NoTeams
   numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1, min = 1, max = 6),
-  radioButtons(inputId = "year_questions", label = "Questions", choices = c("2018", "2019", "2020"), selected = "2019"),
+  radioButtons(inputId = "year_questions", label = "Questions", choices = c("2018", "2019", "2020"), selected = "2020"),
   
   ## For printing
   
@@ -415,8 +415,8 @@ server <- function(input, output, session){
                                    #Jeg sværger, hvis nogen er gået ind på GIT
                                    #For at lure svarene, så har man ingen ære.
                                    776.6, #1: Guernica
-                                   999, #2: 
-                                   999, #3.
+                                   9400, #2: Wilhelm Gustloff
+                                   80, #3: Extinct
                                    999, #4: 
                                    999, #5. 
                                    999, #6: 
