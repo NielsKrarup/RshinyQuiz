@@ -4,9 +4,10 @@ username:
 account: nielskrarup
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 1323476
-bundleId: 2932033
-url: https://nielskrarup.shinyapps.io/QUIZ/
-when: 1585316632.21669
+appId: 3213638
+bundleId: 3849350
+url: https://nielskrarup.shinyapps.io/Quiz/
+when: 1605135564.13857
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: OtherUse.R|SandBox1.R|data/FOLK1A.csv
