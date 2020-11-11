@@ -38,8 +38,9 @@ ui <- fluidPage(
            imageOutput("image2")
            ),
     column(2,
-           p("Yves Klein"),
-           p('Anthropometrie Le Buffle (ANT 93)')
+           p("LA Ring"),
+           p('Sommerdag ved Roskilde Fjord (1900)'),
+           p('Randers Kunstmuseum')
            )
   )
   ),#Tap
@@ -125,7 +126,7 @@ server <- function(input, output, session){
     #   return(NULL)
     invalidateLater(1000, session)
     #timestamp <- as.integer(Sys.time()) %% 100 
-    sample <- sample(0:10,1)
+    sample <- rpois(n = 1, lambda = 1)
     
     if ( sample == 0) {
       return(list(
@@ -136,7 +137,8 @@ server <- function(input, output, session){
       ))
     } else {
       return(list(
-        src = "Pics/YvesKlein.jpg",
+        src = "Pics/LARing.jpg",
+        width = "1400",
         filetype = "image/jpeg",
         alt = "This is a chainring",
         style="display: block; margin-left: auto; margin-right: auto;"
