@@ -414,10 +414,10 @@ server <- function(input, output, session){
                                  Answer = c(
                                    #Jeg sværger, hvis nogen er gået ind på GIT
                                    #For at lure svarene, så har man ingen ære.
-                                   776.6, #1: Guernica
-                                   9400, #2: Wilhelm Gustloff
-                                   80, #3: Extinct
-                                   999, #4: 
+                                   776.6,  #1: Guernica
+                                   9400,   #2: Wilhelm Gustloff
+                                   80,     #3: Extinct mamals
+                                   50.69,  #4: sub 1 year olds per super 100 year olds 
                                    999, #5. 
                                    999, #6: 
                                    999, #7. 
