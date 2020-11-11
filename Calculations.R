@@ -14,7 +14,6 @@ INT <- integrate(f = Vectorize(function(x)
 ),lower = 1, upper = UPNUM) 
 
 3^(3^3)
-1 015 135 770
   
 num <- format(2^(123), scientific = F)
 format(101e7, scientific = F)
@@ -92,6 +91,20 @@ tmp <- data.frame(Argentina = 6960 ,
            Uruguay = 514 ,
            Venezuela = 4978 )
 tmp[,which.min(tmp)]
+
+
+# 2020 --------------------------------------------------------------------
+library(dplyr)
+
+# 100 year ----------------------------------------------------------------
+
+dat <- read.csv(file = "ShinyApp/data/FOLK1A.csv", header = T, sep = ";")
+head(dat, 2) %>% summarise(tot = sum(INDHOLD)) -> sub1
+tail(dat, 22) %>% summarise(tot = sum(INDHOLD)) -> sub100
+sub1/sub100
+
+
+
 
 # FOR APP -----------------------------------------------------------------
 
