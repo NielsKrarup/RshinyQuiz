@@ -103,6 +103,9 @@ head(dat, 2) %>% summarise(tot = sum(INDHOLD)) -> sub1
 tail(dat, 22) %>% summarise(tot = sum(INDHOLD)) -> sub100
 sub1/sub100
 
+## bronze - gold 
+
+
 
 
 
