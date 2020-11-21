@@ -420,10 +420,10 @@ server <- function(input, output, session){
                                    9400,   #2: Wilhelm Gustloff
                                    80,     #3: Extinct mamals
                                    50.69,  #4: sub 1 year olds per super 100 year olds 
-                                   999, #5. 
-                                   999, #6: 
-                                   999, #7. 
-                                   999, #8: 
+                                   71000,  #5: Navajo NAtion km2 
+                                   52,     #6: Bronze Medal 
+                                   2,      #7. Spotify 
+                                   21.91,  #8:US Presidency
                                    999, #9.
                                    999, #10: 
                                    999  #11. 
