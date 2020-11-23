@@ -5,9 +5,9 @@ account: nielskrarup
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3213638
-bundleId: 3849350
+bundleId: 3896936
 url: https://nielskrarup.shinyapps.io/Quiz/
-when: 1605135564.13857
+when: 1606167528.90097
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: OtherUse.R|SandBox1.R|data/FOLK1A.csv

@@ -122,13 +122,15 @@ server <- function(input, output, session){
   
   # pics
   output$image2 <- renderImage({
-    # if (is.null(input$picture))
-    #   return(NULL)
+
     invalidateLater(1000, session)
-    #timestamp <- as.integer(Sys.time()) %% 100 
-    sample <- rpois(n = 1, lambda = 1)
+
+    sec <- as.numeric(format(
+      Sys.time(), format = "%S"
+    )) %% 10
+    sample <- as.logical(runif(1) < 0.5)
     
-    if ( sample == 0) {
+    if (sec == 9 && sample == 0) {
       return(list(
         src = "Pics/Thyge.jpg",
         contentType = "image/jpeg",
