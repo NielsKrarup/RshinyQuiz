@@ -106,28 +106,25 @@ sub1/sub100
 ## bronze - gold 
 
 
+# MC ----------------------------------------------------------------------
+n <- 1e5
+n_tau <- pi
+hh <- replicate(n = n, expr = {
+  S <- 2
+  n <- 0
+  repeat({
+    dice <- sample(x = 1:6, size = 1, replace = T)
+    n <- n + 1
+    if(n >= n_tau & dice == 6 ){
+      S <- S + dice
+      break
+    }  else{
+      S <- S + dice
+    }
+  })
+  S
+})
+mean(hh)
 
+2 + (ceiling(n_tau)-1)/6*21 + 15 + 6
 
-
-# FOR APP -----------------------------------------------------------------
-
-df_Table_Scores <-   data.frame(
-    Team = character(0L), 
-    Question = character(0L), 
-    Try = character(0L), 
-    Points = character(0L)
-  )
-
-df_Table_Scores <- rbind(df_Table_Scores, 
-                         data.frame(
-  Team = 'svin', 
-  Question = '8', 
-  Try = "1", 
-  Points = "x"
-)
-)
-
-df_Table_Scores[df_Table_Scores$Team == "svin",]
-tmp <- df_Table_Scores[df_Table_Scores$Team == "svin" &
-                  df_Table_Scores$Question == 8, ]
-tmp

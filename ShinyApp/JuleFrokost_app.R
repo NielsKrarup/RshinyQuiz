@@ -415,7 +415,7 @@ server <- function(input, output, session){
              df_QA <- data.frame(Question = 1:11,
                                  Answer = c(
                                    #Jeg sværger, hvis nogen er gået ind på GIT
-                                   #For at lure svarene, så har man ingen ære.
+                                   #For at lure svarene, så kommer der til at ryge pikhoveder
                                    776.6,  #1: Guernica
                                    9400,   #2: Wilhelm Gustloff
                                    80,     #3: Extinct mamals
@@ -423,10 +423,10 @@ server <- function(input, output, session){
                                    71000,  #5: Navajo NAtion km2 
                                    52,     #6: Bronze Medal 
                                    2,      #7. Spotify 
-                                   21.91,  #8:US Presidency
-                                   999, #9.
-                                   999, #10: 
-                                   999  #11. 
+                                   21.91,  #8: US Presidency
+                                   23,     #9. German head of state
+                                   158,    #10: Digits in 100 factorial
+                                   33.5     #11. Markov Chain: X0 + (ceiling(n_tau)-1)/6*21 + 15 + 6
                                  ) 
              )
            },
