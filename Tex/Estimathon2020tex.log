@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.30)  23 NOV 2020 20:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.30)  26 NOV 2020 23:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -706,7 +706,7 @@ d on input line 70.
 Here is how much of TeX's memory you used:
  12710 strings out of 492649
  239775 string characters out of 6129622
- 295140 words of memory out of 5000000
+ 296140 words of memory out of 5000000
  16481 multiletter control sequences out of 15000+600000
  536798 words of font info for 46 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -724,7 +724,7 @@ s/cm/cmsy10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmsy8.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmti12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/sy
 mbols/msbm10.pfb>
-Output written on Estimathon2020tex.pdf (2 pages, 116569 bytes).
+Output written on Estimathon2020tex.pdf (2 pages, 117458 bytes).
 PDF statistics:
  59 PDF objects out of 1000 (max. 8388607)
  42 compressed objects within 1 object stream
