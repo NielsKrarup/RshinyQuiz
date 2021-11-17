@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.30)  15 NOV 2021 18:38
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2018) (preloaded format=pdflatex 2018.4.30)  17 NOV 2021 17:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**Estimathon2020tex.tex
-(./Estimathon2020tex.tex
+**Estimathon2021tex.tex
+(./Estimathon2021tex.tex
 LaTeX2e <2018-04-01> patch level 2
 Babel <3.18> and hyphenation patterns for 84 language(s) loaded.
 (/usr/local/texlive/2018/texmf-dist/tex/latex/base/article.cls
@@ -544,8 +544,8 @@ Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 \Gm@layoutvoffset=\dimen159
 \Gm@dimlist=\toks28
 )
-No file Estimathon2020tex.aux.
-\openout1 = `Estimathon2020tex.aux'.
+No file Estimathon2021tex.aux.
+\openout1 = `Estimathon2021tex.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
 LaTeX Font Info:    ... okay on input line 17.
@@ -699,9 +699,9 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 ]
 
 Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
-d on input line 70.
+d on input line 74.
 
-[2] (./Estimathon2020tex.aux) ) 
+[2] (./Estimathon2021tex.aux) ) 
 Here is how much of TeX's memory you used:
  12708 strings out of 492649
  239731 string characters out of 6129622
@@ -723,7 +723,7 @@ s/cm/cmsy10.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts
 /cm/cmsy8.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmti12.pfb></usr/local/texlive/2018/texmf-dist/fonts/type1/public/amsfonts/sy
 mbols/msbm10.pfb>
-Output written on Estimathon2020tex.pdf (2 pages, 117460 bytes).
+Output written on Estimathon2021tex.pdf (2 pages, 117537 bytes).
 PDF statistics:
  59 PDF objects out of 1000 (max. 8388607)
  42 compressed objects within 1 object stream

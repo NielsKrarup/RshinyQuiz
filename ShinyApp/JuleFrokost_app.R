@@ -9,6 +9,10 @@
 
 
 library(ggplot2)
+library(DT)
+getwd()
+source(file = "answers.R")
+
 #Hardcoded values
 Max_No_Guesses <- 16
 #library(plotly)
@@ -20,11 +24,11 @@ ui <- fluidPage(
 
   # Application title
   uiOutput("appTitleUI"),
+  
   #Number of teams: NoTeams
   numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1, min = 1, max = 6),
-  radioButtons(inputId = "year_questions", label = "Questions", choices = c("2018", "2019", "2020"), selected = "2020"),
-  
-  ## For printing
+  #Questions used
+  radioButtons(inputId = "year_questions", label = "Questions", choices = c("2018", "2019", "2020", "2021"), selected = "2021"),
   
   ##UI for setting team names.
   
@@ -43,7 +47,12 @@ ui <- fluidPage(
            p('Randers Kunstmuseum')
            )
   )
-  ),#Tap
+  ),
+  
+
+# TapPanel for Scores & Submission  -----------------------------------------------------
+
+  
   tabPanel("Submissions - Score",
 
   
@@ -62,7 +71,7 @@ ui <- fluidPage(
   fluidRow(
     column(3,
                     ## Selecting the current question being answered
-      selectInput(inputId = "Cur_Question", label = "Question",choices = 1:11)
+      selectInput(inputId = "Cur_Question", label = "Question", choices = 1:11)
       ),
     column(3,
            ## Selecting the current TRY  (for correcting errors)
@@ -96,7 +105,8 @@ fluidRow(
     column(3,
            #leader board
            h2('Leader Board'),
-           tableOutput(outputId = "table3"),br(),
+           DT::dataTableOutput(outputId = "table_leaderboard", width = "125%"),
+           br(),
            #table1 df_table_scores
            h3('10 latest submissions'),
            tableOutput(outputId = 'table1')
@@ -223,14 +233,14 @@ server <- function(input, output, session){
   })
   
   #Leader board
-  output$table3 <- renderTable({
+  output$table_leaderboard <- DT::renderDataTable({
     req(input$NoTeams)
     req(team_names())
     
     leader_table <- values$df_plot[match(unique(values$df_plot$Team),values$df_plot$Team), ]
     leader_table <- leader_table[order(leader_table$Total_Score, decreasing = F),]
     
-    leader_table
+    DT::datatable(leader_table, options = list(dom = 't'), filter = "none")
     
 
   })
@@ -244,13 +254,13 @@ server <- function(input, output, session){
     g <- ggplot(data = values$df_plot, aes(x = Answers_Spent, y = Total_Score, group = Team) ) + 
       geom_line(aes(colour = Team),size = 2) + 
       geom_point(aes(col = Team, shape = Team), size = 3) +
-      scale_x_continuous(breaks = 0:16, limits = c(0,16)) +
+      scale_x_continuous(breaks = 0:16, limits = c(0,16)) + scale_y_continuous(trans = "log2") +
       theme(axis.title = element_text(size = 30),
               axis.text = element_text(size = 20),
-            legend.title = element_text(size = 50),
+            legend.title = element_text(size = 25),
             legend.text=element_text(size=30),
             legend.key.size = unit(6, "line")) + 
-      guides(shape = guide_legend(override.aes = list(size = 5)))
+      guides(shape = guide_legend(override.aes = list(size = 3)))
     #supress only one group warning,(when only one team has been made)
     suppressWarnings(g)
   })
@@ -412,64 +422,8 @@ server <- function(input, output, session){
     )
     
     #Questions and corresponding answers, fixed! not reactive.
-    switch(input$year_questions,
-           "2020" = {
-             df_QA <- data.frame(Question = 1:11,
-                                 Answer = c(
-                                   #Jeg sværger, hvis nogen er gået ind på GIT
-                                   #For at lure svarene, så kommer der til at ryge pikhoveder
-                                   776.6,  #1: Guernica
-                                   9400,   #2: Wilhelm Gustloff
-                                   80,     #3: Extinct mamals
-                                   50.69,  #4: sub 1 year olds per super 100 year olds 
-                                   71000,  #5: Navajo NAtion km2 
-                                   52,     #6: Bronze Medal 
-                                   2,      #7. Spotify 
-                                   21.91,  #8: US Presidency
-                                   23,     #9. German head of state
-                                   158,    #10: Digits in 100 factorial
-                                   33.5     #11. Markov Chain: X0 + (ceiling(n_tau)-1)/6*21 + 15 + 6
-                                 ) 
-             )
-           },
-           
-           "2019" = {
-             df_QA <- data.frame(Question = 1:11,
-                                 Answer = c(
-                                   193, #1: Snurre snup
-                                   10918, #2: Mugabe
-                                   2, #3. Ringo Starr
-                                   1015135770, #4: triple Integral
-                                   547.2, #5: US state size prop
-                                   53, #6: Fastest Final CL goal.
-                                   1554, #7: Dices first occurence of 4 six'es
-                                   514, #8: Lowest Highest Point in South America
-                                   1876, #9: Stram Kurs vs Kristen 
-                                   210, #10:Atomprøvesprængning
-                                   1047000000 #Hoizer Spotify
-                                 ) 
-             )
-           },
-           "2018" = {
-             df_QA <- data.frame(Question = 1:11,
-                                 Answer = c(
-                                   683, #1: LOTR
-                                   17, #2: Russia Border
-                                   86100, #3. Tanks
-                                   38, #4: Digits in 2^123
-                                   15748000, #5: Painting, Hammershøi
-                                   1267069, #6: På sporet af den tabte tid
-                                   74, #7: FIFA FORØYA
-                                   5757, #8: Le tour
-                                   144, #9: youtube > billion
-                                   169, #10: brownian motion
-                                   149597870700 #11: AU in meters
-                                 ) 
-             )
-           })
-    
+    df_QA <- answers_list[[input$year_questions]]
 
-    
     #Calculate Score, X if not correct, character
 
       #Set the current question being answered and the correct value for ref
