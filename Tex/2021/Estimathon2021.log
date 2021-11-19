@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2020.3.27)  19 NOV 2021 12:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/W32TeX) (preloaded format=pdflatex 2020.3.27)  19 NOV 2021 14:15
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**Estimathon2020tex.tex
-(./Estimathon2020tex.tex
+**Estimathon2021.tex
+(./Estimathon2021.tex
 LaTeX2e <2020-02-02> patch level 5
 L3 programming layer <2020-02-25>
 (c:/texlive/2019/texmf-dist/tex/latex/base/article.cls
@@ -239,8 +239,8 @@ Package: iftex 2019/11/07 v1.0c TeX engine tests
 \Gm@layoutvoffset=\dimen160
 \Gm@dimlist=\toks29
 )
-(./Estimathon2020tex.aux)
-\openout1 = `Estimathon2020tex.aux'.
+(./Estimathon2021.aux)
+\openout1 = `Estimathon2021.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
 LaTeX Font Info:    ... okay on input line 17.
@@ -346,36 +346,31 @@ This may cause the page layout to be inconsistent, however.
 
 [1{c:/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
-]
-
-Package amsfonts Warning: Obsolete command \bold; \mathbf should be used instea
-d on input line 70.
-
-[2] (./Estimathon2020tex.aux) ) 
+] [2]
+(./Estimathon2021.aux) ) 
 Here is how much of TeX's memory you used:
- 4454 strings out of 480994
- 71203 string characters out of 5916032
- 337962 words of memory out of 5000000
- 19902 multiletter control sequences out of 15000+600000
- 538864 words of font info for 48 fonts, out of 8000000 for 9000
+ 4450 strings out of 480994
+ 71135 string characters out of 5916032
+ 336899 words of memory out of 5000000
+ 19900 multiletter control sequences out of 15000+600000
+ 538243 words of font info for 46 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,10n,45p,341b,220s stack positions out of 5000i,500n,10000p,200000b,80000s
-<c:/texlive/2019/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmbx12.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmbx8.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.p
-fb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:/te
-xlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2019
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2019/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2019/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmsy10.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmsy8.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.
-pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-
-Output written on Estimathon2020tex.pdf (2 pages, 117463 bytes).
+ 38i,10n,45p,338b,220s stack positions out of 5000i,500n,10000p,200000b,80000s
+<c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmbx12.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmex1
+0.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><c:
+/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb><c:/texlive/2
+019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb><c:/texlive/2019/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texlive/2019/texmf-dist/fonts
+/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2019/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmsy10.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmsy8.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmti
+12.pfb><c:/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.p
+fb>
+Output written on Estimathon2021.pdf (2 pages, 107519 bytes).
 PDF statistics:
- 59 PDF objects out of 1000 (max. 8388607)
- 42 compressed objects within 1 object stream
+ 55 PDF objects out of 1000 (max. 8388607)
+ 39 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

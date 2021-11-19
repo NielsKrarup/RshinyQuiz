@@ -128,3 +128,13 @@ mean(hh)
 
 2 + (ceiling(n_tau)-1)/6*21 + 15 + 6
 
+
+# hyper geom dist ---------------------------------------------------------
+
+n <- 100
+d <- 10
+
+phyper(q = 1, m = d, n = n-d, k = 1)
+
+sum(dhyper(x = 1, m = d, n = n-d, k = 0:n)*0:n )
+

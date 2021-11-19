@@ -8,12 +8,12 @@ answers_list <- list(
                         583 ,                        #3: aviation disaster
                         138 ,                        #4: sniper kills
                         1*60*60 + 37*60 + 52,        #5: mario 5872
-                        1388,                        #6: Valgfest med mexicansk tema 
-                        2,                           #7. x 
-                        21.91,                       #8: x
-                        23,                          #9. x
-                        158,                         #10: x
-                        33.5                         #11. x
+                        15673.5,                     #6: Valgfest med mexicansk tema 
+                        27.55,                       #7. Urn Black balls 
+                        36,                          #8: Chrsoffer columbus
+                        11,                          #9. Equator countries
+                        27,                          #10: Jean michelle basqiuat
+                        6400                         #11. DMZ
                       ) 
   ),
   "2020" = data.frame(Question = 1:11,

@@ -15,6 +15,7 @@ source(file = "answers.R")
 
 #Hardcoded values
 Max_No_Guesses <- 16
+pic_name <- "JMB"
 #library(plotly)
 
 # Define UI for application that draws a histogram
@@ -42,9 +43,9 @@ ui <- fluidPage(
            imageOutput("image2")
            ),
     column(2,
-           p("LA Ring"),
-           p('Sommerdag ved Roskilde Fjord (1900)'),
-           p('Randers Kunstmuseum')
+           p("Jean-Michel Basquiat"),
+           p('Boy and Dog in a Johnnypump (1982)'),
+           p('Art Institute of Chicago')
            )
   )
   ),
@@ -55,25 +56,25 @@ ui <- fluidPage(
   
   tabPanel("Submissions - Score",
 
-  
+           fluidRow(
+             h3("Submissons:")
+           ),
   
   ##### Question inputs Sidebar with a slider input for number of bins
-  fluidRow(
-           h3("Submissons:")
-    ),
+column(width = 4, #overall colum
   fluidRow(
     column(
-      6,
+      10,
       ##UI for selecting the team answering.
       uiOutput("TeamsRadioButtons")
       )
     ),
   fluidRow(
-    column(3,
-                    ## Selecting the current question being answered
+    column(6,
+      ## Selecting the current question being answered
       selectInput(inputId = "Cur_Question", label = "Question", choices = 1:11)
       ),
-    column(3,
+    column(4,
            ## Selecting the current TRY  (for correcting errors)
            ## Should look up from df_info to see number of tries made.
            uiOutput("TRY")
@@ -83,28 +84,28 @@ ui <- fluidPage(
 fluidRow(
   ### Left Interval: al
   column(
-    3,
+    5,
     uiOutput("UI_Cur_L")  
     ),
   ### Right Interval: ar
   column(
-    3,
+    5,
     uiOutput("UI_Cur_R")  
   )
   ),
 fluidRow(
-  column(3,
+  column(1,
          actionButton(inputId = "Cur_Submit", label = "Submit"),
          verbatimTextOutput("Validate_Submit")
   ),
-  column(3,
+  column(offset = 1, 1,
          actionButton(inputId = "Cur_Delete", label = "Delete Selected")
          )
   ),
   fluidRow(
-    column(3,
+    column(8,
            #leader board
-           h2('Leader Board'),
+           h3('Leader Board'),
            DT::dataTableOutput(outputId = "table_leaderboard", width = "125%"),
            br(),
            #table1 df_table_scores
@@ -113,14 +114,12 @@ fluidRow(
            # df_plot table
            #tableOutput(outputId = 'table2'),
 
-    ),
-    column(offset = 1, 8,align = 'left',
-          h1("Plot of score"),
+    ))),
+    column(width = 8, align = 'left',
          # Show a plot of the generated distribution
          plotOutput(outputId = 'distPlot1',height = 600), class = 'leftAlign')
   )
 
-)
 )
 )
 
@@ -149,8 +148,8 @@ server <- function(input, output, session){
       ))
     } else {
       return(list(
-        src = "Pics/LARing.jpg",
-        width = "1400",
+        src = paste0("Pics/", pic_name, ".jpg"),
+        width = "1100",
         filetype = "image/jpeg",
         alt = "This is a chainring",
         style="display: block; margin-left: auto; margin-right: auto;"
@@ -252,15 +251,23 @@ server <- function(input, output, session){
     req(team_names())
     # draw the histogram with the specified number of bins
     g <- ggplot(data = values$df_plot, aes(x = Answers_Spent, y = Total_Score, group = Team) ) + 
-      geom_line(aes(colour = Team),size = 2) + 
+      geom_line(aes(colour = Team), size = 1) + 
       geom_point(aes(col = Team, shape = Team), size = 3) +
       scale_x_continuous(breaks = 0:16, limits = c(0,16)) + scale_y_continuous(trans = "log2") +
-      theme(axis.title = element_text(size = 30),
-              axis.text = element_text(size = 20),
-            legend.title = element_text(size = 25),
-            legend.text=element_text(size=30),
-            legend.key.size = unit(6, "line")) + 
-      guides(shape = guide_legend(override.aes = list(size = 3)))
+      
+      theme(axis.title = element_text(size = 12),
+            axis.text = element_text(size = 10),
+            legend.title = element_text(size = 16, face = "bold"),
+            legend.text=element_text(size = 14),
+            legend.key.size = unit(3, "line"),
+            #legend position
+            legend.position = 'top', 
+            legend.direction = "horizontal", 
+            legend.box = "horizontal"
+            ) + 
+      guides(shape = guide_legend(override.aes = list(size = 3)),
+             color = guide_legend(title.position = "top", title.hjust = 0.5)
+             )
     #supress only one group warning,(when only one team has been made)
     suppressWarnings(g)
   })
