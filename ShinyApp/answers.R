@@ -1,4 +1,23 @@
 answers_list <- list(
+  "novo" = data.frame(Question = 1:11,
+                      Answer = c(
+                        #Jeg sværger, hvis nogen er gået ind på GIT
+                        #For at lure svarene, så kommer der til at ryge pikhoveder
+                        17.3,                        #1: Russia Shortest border 
+                        38,                          #2: Digits in 2^123
+                        74,                          #3: FIFA FORØYA
+                        
+                        583 ,                        #3: aviation disaster
+                        138 ,                        #4: sniper kills
+                        1*60*60 + 37*60 + 52,        #5: 
+                        15673.5,                     #6: Valgfest med mexicansk tema 
+                        27.55,                       #7. Urn Black balls 
+                        36,                          #8: Christoffer columbus, days of journey
+                        11,                          #9. Equator countries
+                        27,                          #10: Jean michelle basqiuat
+                        6400                         #11. DMZ
+                      ) 
+  ),
   "2021" = data.frame(Question = 1:11,
                       Answer = c(
                         #Jeg sværger, hvis nogen er gået ind på GIT

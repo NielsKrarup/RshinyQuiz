@@ -29,7 +29,7 @@ ui <- fluidPage(
   #Number of teams: NoTeams
   numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1, min = 1, max = 6),
   #Questions used
-  radioButtons(inputId = "year_questions", label = "Questions", choices = c("2018", "2019", "2020", "2021"), selected = "2021"),
+  radioButtons(inputId = "year_questions", label = "Questions", choices = c("2018", "2019", "2020", "2021", "novo"), selected = "novo"),
   
   ##UI for setting team names.
   
@@ -180,7 +180,8 @@ server <- function(input, output, session){
         need(input$Cur_Team,'HEJ Team navn mangler!'),
         need(input$Cur_L, 'LEFT QUESS MISSING'),
         need(input$Cur_R, 'RIGHT QUESS MISSING'),
-        need(as.numeric(input$Cur_L) <= as.numeric(input$Cur_R), 'LEFT <= RIGHT' )
+        need(as.numeric(input$Cur_L) <= as.numeric(input$Cur_R), 'LEFT <= RIGHT' ),
+        need(as.numeric(input$Cur_L) > 0, 'Positive Guess')
       )
     })
     
@@ -425,7 +426,9 @@ server <- function(input, output, session){
       need(input$Cur_Team, label = "Provide Team Name "),
       need(input$Cur_L, label = "Provide Left Quess"),
       need(input$Cur_R, label = "Provide Right Quess"),
-      need(as.numeric(input$Cur_L) <= as.numeric(input$Cur_R), 'must have: LEFT <= RIGHT' )
+      need(as.numeric(input$Cur_L) <= as.numeric(input$Cur_R), 'must have: LEFT <= RIGHT' ),
+      need(as.numeric(input$Cur_L) > 0, 'must have: 0 < LEFT' )
+      
     )
     
     #Questions and corresponding answers, fixed! not reactive.
