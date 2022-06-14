@@ -105,12 +105,12 @@ fluidRow(
   fluidRow(
     column(8,
            #leader board
-           h3('Leader Board'),
+           h2('Leader Board'),
            DT::dataTableOutput(outputId = "table_leaderboard", width = "125%"),
            br(),
            #table1 df_table_scores
            h3('10 latest submissions'),
-           tableOutput(outputId = 'table1')
+           DT::dataTableOutput(outputId = 'table1', width = "125%")
            # df_plot table
            #tableOutput(outputId = 'table2'),
 
@@ -216,10 +216,10 @@ server <- function(input, output, session){
 
 
   #Score table
-  output$table1 <- renderTable({
+  output$table1 <- DT::renderDataTable({
     #Latest scores
     df <- values$df_Table_Scores
-    head(df, 10)
+    DT::datatable(head(df, 10), options = list(dom = "t", filter = "none"))
   })
   
   #Plot data frame, containing the score after 0 <= n <= 16 tries.
