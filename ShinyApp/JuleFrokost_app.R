@@ -16,6 +16,7 @@ source(file = "answers.R")
 #Hardcoded values
 Max_No_Guesses <- 16
 pic_name <- "JMB"
+show_jump_pic <- FALSE
 #library(plotly)
 
 # Define UI for application that draws a histogram
@@ -95,8 +96,8 @@ fluidRow(
   ),
 fluidRow(
   column(1,
-         actionButton(inputId = "Cur_Submit", label = "Submit"),
-         verbatimTextOutput("Validate_Submit")
+         actionButton(inputId = "Cur_Submit", label = "Submit")
+         #verbatimTextOutput("Validate_Submit")
   ),
   column(offset = 1, 1,
          actionButton(inputId = "Cur_Delete", label = "Delete Selected")
@@ -139,7 +140,7 @@ server <- function(input, output, session){
     )) %% 10
     sample <- as.logical(runif(1) < 0.5)
     
-    if (sec == 9 && sample == 0) {
+    if (sec %in% c(1:9) && sample == 0 && show_jump_pic) {
       return(list(
         src = "Pics/Thyge.jpg",
         contentType = "image/jpeg",

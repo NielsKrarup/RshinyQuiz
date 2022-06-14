@@ -7,11 +7,12 @@ answers_list <- list(
                         38,                          #2: Digits in 2^123
                         74,                          #3: FIFA FORØYA
                         
-                        583 ,                        #3: aviation disaster
-                        138 ,                        #4: sniper kills
-                        1*60*60 + 37*60 + 52,        #5: 
-                        15673.5,                     #6: Valgfest med mexicansk tema 
-                        27.55,                       #7. Urn Black balls 
+                        514,                         #4: Lowest Highest Point in South America
+
+                        193,                         #5: Snurre snup
+                        10918,                       #6: Mugabe
+                        2,                           #7. Ringo Starr
+                        
                         36,                          #8: Christoffer columbus, days of journey
                         11,                          #9. Equator countries
                         27,                          #10: Jean michelle basqiuat
