@@ -7,7 +7,7 @@ answers_list <- list(
                         38,                          #2: Digits in 2^123
                         74,                          #3: FIFA FORØYA
                         
-                        514,                         #4: Lowest Highest Point in South America
+                        514,                         #4: Lowest Highest Point in South America, uruguay
 
                         193,                         #5: Snurre snup
                         10918,                       #6: Mugabe
