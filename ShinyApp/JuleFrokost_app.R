@@ -10,13 +10,13 @@
 
 library(ggplot2)
 library(DT)
-getwd()
 source(file = "answers.R")
 
 #Hardcoded values
-Max_No_Guesses <- 16
-pic_name <- "JMB"
-show_jump_pic <- FALSE
+Max_No_Guesses <- 11
+pic_name <- "LARing"
+show_jump_pic <- TRUE
+
 #library(plotly)
 
 # Define UI for application that draws a histogram
@@ -29,8 +29,8 @@ ui <- fluidPage(
   
   #Number of teams: NoTeams
   numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1, min = 1, max = 6),
-  #Questions used
-  radioButtons(inputId = "year_questions", label = "Questions", choices = c("2018", "2019", "2020", "2021", "novo"), selected = "novo"),
+  #Questions used, use the sourced in list names
+  radioButtons(inputId = "year_questions", label = "Questions", choices = names(answers_list), selected = "2022"),
   
   ##UI for setting team names.
   
@@ -44,9 +44,9 @@ ui <- fluidPage(
            imageOutput("image2")
            ),
     column(2,
-           p("Jean-Michel Basquiat"),
-           p('Boy and Dog in a Johnnypump (1982)'),
-           p('Art Institute of Chicago')
+           p("LA Ring"),
+           p('Sommerdag ved Roskilde Fjord (1900)'),
+           p('Randers Kunstmuseum')
            )
   )
   ),
@@ -73,7 +73,8 @@ column(width = 4, #overall colum
   fluidRow(
     column(6,
       ## Selecting the current question being answered
-      selectInput(inputId = "Cur_Question", label = "Question", choices = 1:11)
+      uiOutput("choicesQuestion")
+      
       ),
     column(4,
            ## Selecting the current TRY  (for correcting errors)
@@ -138,9 +139,9 @@ server <- function(input, output, session){
     sec <- as.numeric(format(
       Sys.time(), format = "%S"
     )) %% 10
-    sample <- as.logical(runif(1) < 0.5)
+    sample <- as.logical(runif(1) < 0.75)
     
-    if (sec %in% c(1:9) && sample == 0 && show_jump_pic) {
+    if (sec %in% c(9:9) & sample  & show_jump_pic) {
       return(list(
         src = "Pics/Thyge.jpg",
         contentType = "image/jpeg",
@@ -212,7 +213,7 @@ server <- function(input, output, session){
     
     values$df_plot <- data.frame(Team = team_names(),
                                  Answers_Spent = rep(0L,input$NoTeams),
-                                 Total_Score = rep(20480, input$NoTeams))
+                                 Total_Score = rep(10 * 2^length(answers_list[[input$year_questions]]$Question), input$NoTeams))
   })
 
 
@@ -305,6 +306,13 @@ server <- function(input, output, session){
       })
   })
   
+  #
+  output$choicesQuestion <- renderUI({
+    selectInput(inputId = "Cur_Question", label = "Question", choices = answers_list[[input$year_questions]]["Question"])
+    
+  })
+  
+  
   ###################### UI: Reset Left and Right entries after submission
   output$UI_Cur_L <- renderUI({
     times <- input$Cur_Submit
@@ -395,7 +403,7 @@ server <- function(input, output, session){
       
     }
     #Update the total score
-    new_Total_Score <-    (10 + tmp_team_sum_points)*2^(11 - tmp_team_numcorrect_counter )
+    new_Total_Score <-    (10 + tmp_team_sum_points)*2^(length(df_QA$Question) - tmp_team_numcorrect_counter )
     #insert in data_table
     
     #override point of try and remove "above"
@@ -514,7 +522,7 @@ server <- function(input, output, session){
              
            }
         #Update the total score
-        new_Total_Score <-    (10 + tmp_team_sum_points)*2^(11 - tmp_team_numcorrect_counter )
+        new_Total_Score <-    (10 + tmp_team_sum_points)*2^(length(df_QA$Question) - tmp_team_numcorrect_counter )
         #insert in data_table
         
         #If correction, i.e. MaxTru != Cur - answers spent is not <= prior number of answeres spent

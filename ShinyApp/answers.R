@@ -1,4 +1,17 @@
 answers_list <- list(
+  "2022" = data.frame(Question = 1:7,
+                      Answer = c(
+                        #Jeg sværger, hvis nogen er gået ind på GIT
+                        #For at lure svarene, så kommer der til at ryge pikhoveder
+                        10,                           #1: africa capitals (count)
+                        2.7,                          #2 commercial flight (km)
+                        7,                            #3: BG champs (count)
+                        13,                           #4 club 27
+                        1574,                         #5 Boing 747
+                        40000,                        #6 LIGO
+                        0.022683*10^4                 #7 Ir Hall
+                      )
+  ), 
   "novo" = data.frame(Question = 1:11,
                       Answer = c(
                         #Jeg sværger, hvis nogen er gået ind på GIT
