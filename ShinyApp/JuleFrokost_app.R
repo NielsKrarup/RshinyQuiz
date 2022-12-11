@@ -403,7 +403,7 @@ server <- function(input, output, session){
       
     }
     #Update the total score
-    new_Total_Score <-    (10 + tmp_team_sum_points)*2^(length(df_QA$Question) - tmp_team_numcorrect_counter )
+    new_Total_Score <-    (10 + tmp_team_sum_points)*2^(length(answers_list[[input$year_questions]]$Question) - tmp_team_numcorrect_counter )
     #insert in data_table
     
     #override point of try and remove "above"
