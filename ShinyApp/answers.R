@@ -1,4 +1,17 @@
 answers_list <- list(
+  "2023" = data.frame(Question = 1:7,
+                      Answer = c(
+                        #Jeg sværger, hvis nogen er gået ind på GIT
+                        #For at lure svarene, så kommer der til at ryge pikhoveder
+                        174,                          #1: Pablo, Eminem overlap 
+                        30,                           #2 RMS Britanica
+                        7,                            #3: 
+                        13,                           #4 
+                        1574,                         #5 
+                        40000,                        #6 
+                        0.022683*10^4                 #7 
+                      )
+  ), 
   "2022" = data.frame(Question = 1:7,
                       Answer = c(
                         #Jeg sværger, hvis nogen er gået ind på GIT
