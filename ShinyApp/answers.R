@@ -6,7 +6,7 @@ answers_list <- list(
                         174,                          #1: Pablo, Eminem overlap 
                         30,                           #2: RMS Britanica
                         11,                           #3: FIFA Scored in 11 seconds,
-                        1610.429,                     #4: OIl SPill vs Ixtoc I oil spill, days
+                        1610.429,                     #4: OIl SPill vs Ixtoc I oil spill, weeks
                         155,                          #5: 155 Berliner Mauer
                         52,                           #6: Beatles
                         6                             #7: Mænd, den store bagedyst

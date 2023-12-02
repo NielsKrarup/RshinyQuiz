@@ -28,9 +28,9 @@ ui <- fluidPage(
   uiOutput("appTitleUI"),
   
   #Number of teams: NoTeams
-  numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 1, min = 1, max = 6),
+  numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 2, min = 1, max = 6),
   #Questions used, use the sourced in list names
-  radioButtons(inputId = "year_questions", label = "Questions", choices = names(answers_list), selected = "2022"),
+  radioButtons(inputId = "year_questions", label = "Questions", choices = names(answers_list), selected = "2023"),
   
   ##UI for setting team names.
   
@@ -317,7 +317,7 @@ server <- function(input, output, session){
   output$UI_Cur_L <- renderUI({
     times <- input$Cur_Submit
     div(id=letters[(times %% length(letters)) + 1],
-        passwordInput("Cur_L", 'Left Interval Quess', placeholder = 'Crypto_PassWord')
+        numericInput("Cur_L", 'Left Interval Quess', 0)
     )
   })
   
@@ -325,7 +325,8 @@ server <- function(input, output, session){
   output$UI_Cur_R <- renderUI({
     times <- input$Cur_Submit
     div(id=letters[(times %% length(letters)) + 1],
-        passwordInput("Cur_R", 'Right Interval Quess', placeholder = 'Crypto_PassWord')
+        numericInput("Cur_R", 'Right Interval Quess', 0)
+        #passwordInput("Cur_R", 'Right Interval Quess', placeholder = 'Crypto_PassWord')
     )
   })
   
