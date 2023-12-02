@@ -4,12 +4,12 @@ answers_list <- list(
                         #Jeg sværger, hvis nogen er gået ind på GIT
                         #For at lure svarene, så kommer der til at ryge pikhoveder
                         174,                          #1: Pablo, Eminem overlap 
-                        30,                           #2 RMS Britanica
-                        7,                            #3: 
-                        13,                           #4 
-                        1574,                         #5 
-                        40000,                        #6 
-                        0.022683*10^4                 #7 
+                        30,                           #2: RMS Britanica
+                        11,                           #3: FIFA Scored in 11 seconds,
+                        1610.429,                     #4: OIl SPill vs Ixtoc I oil spill, days
+                        155,                          #5: 155 Berliner Mauer
+                        52,                           #6: Beatles
+                        6                             #7: Mænd, den store bagedyst
                       )
   ), 
   "2022" = data.frame(Question = 1:7,
