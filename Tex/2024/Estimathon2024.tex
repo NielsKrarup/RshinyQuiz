@@ -1,0 +1,130 @@
+\documentclass[12pt,a4paper]{article}       
+\usepackage[utf8]{inputenc}  
+\usepackage{amsthm,amsmath,amssymb,amsfonts,bbm} 
+\usepackage[danish]{babel} 
+\usepackage{xfrac} 
+
+\usepackage{xfp}
+
+
+\usepackage{graphicx}   
+\usepackage{fancyhdr}	
+\usepackage[margin=1.10in]{geometry} 
+\pagestyle{fancy}
+\newcommand{\us}[1]{\underset{=}{#1}} 
+\newcommand{\ul}[1]{\underline{#1}} 
+\lhead{Bowling for cbind()} 
+\chead{}     
+\rhead{\today} 
+\parindent 0cm 
+\linespread{1.1}
+%global vars!
+\newcommand{\timemin}{20}
+
+\newcommand{\nquestions}{7}
+\newcommand{\nguesses}{11}
+\NewDocumentCommand{\showcalculation}{o m}{$
+  \IfValueTF{#1}
+    {#1}{#2} = \fpeval{#2}
+  $}
+
+
+\begin{document} 
+\section*{Regeln}
+You have \timemin{} minutes to submit answers. There are \nquestions{} questions and a correct answer is always a positive real number i.e. question $i$ has answer $\theta_i \in \mathbb{R}_+$ for $i = 1,2,\ldots, \nquestions{} $. Submissions are made in the form of an interval:
+$$
+[\text{Min}_i, \text{Max}_i]
+$$
+Note that both endpoints are included. Each team has \nguesses{} guesses hence multiple submissions for questions is possible altough the score, and hence the correctness of the guess, will always be based on the \textbf{latest} submission to the question.
+Submissions can be made throughout the quiz. 
+The team's score is given by the formula:
+$$
+\left( 10 + \sum_{\substack{i : \text{Min}_i \leq \theta_i \leq \text{Max}_i}} \left\lfloor \frac{\text{Max}_i}{\text{Min}_i} \right\rfloor \right) \cdot 2^{\nquestions{} - \# \text{correct guesses} }
+$$
+Where $\lfloor \cdot \rfloor$ is the floor function.\\ \\
+Hence, at the beginning of the quiz all teams have a score of \\
+
+\showcalculation[(10 + 0) * 2 ^ {\nquestions{}-0} ]{ 10 * 2 ^ \nquestions{}} \\
+
+
+When the time is up, the team with the \textbf{lowest} score wins.\\
+When submitting an interval it must clearly state:\\ \\
+$\bullet$ Team\\
+$\bullet$ Question\\
+$\bullet$ Interval. \\ \\
+Using scientific notation is allowed but must follow the conventions of R e.g.:\\
+100 = 1e2 \\
+93.000 = 93e3 \\
+1.010.000.000 = 101e7 \\
+etc.
+
+After submission the team (and everybody else) will be able to see whether the guess is correct or not and if so the value of the answer in the sum i.e. $\lfloor \text{Max}_i / \text{Min}_i \rfloor$ as well as the updated total score.
+\newpage
+emptypage
+\newpage
+
+
+
+\section*{Fragen}
+\begin{enumerate}
+
+\item The most isolated any human being has been in history, in the sense of longest distance in km to any other humans 
+
+\item Number of Books in the Old Testament as per the Lutheran Bible, i.e. excluding the books of the Apocrypha which are not considered canon but still included as part of the Lutheran Bible "...for the instruction of godly manners".
+
+\item Let $\mathbbm{1}_{(u)}^i$ be the indicator function of person $i$ being alive at time $u$.\\
+Let,
+$$
+o(x,y) = 
+\int_{\text{1st Jan. 1}}^\text{6th Dec. 2024}
+\mathbbm{1}_{(u)}^x \mathbbm{1}_{(u)}^y du
+$$ with unit of $u$ being years. Further, let
+
+$$
+z(I) = \sum_{i\neq j\in I} o(i,j)
+$$
+
+what is 
+$$
+\lceil z(I) \rceil
+$$
+
+for $I=\{ \text{Greta Thunberg},\text{Donald Trump}, \text{Edward Smith}, \text{Frederik IX of Denmark} \}$ 
+
+
+\item 
+$$
+2025^2 - 2024^2
+$$
+
+\item The year 2019 was a record year for car sales in Denmark beating the previous record year of 2016. How many of the cars sold in 2019 was from TESLA?  
+
+\item Let the compound distribution $X$ be defined by first drawing $p \sim Beta(a,b)$, 
+from which $X \sim Bin(n,p)$.\\
+Setting $a = b = 1$ and $n = 99$ what is 
+$$
+\mathbb{P}(X = 50) \cdot 10^4
+$$
+
+
+\item Tasiilaq (From East Greenlandic: Danish:'den indsølignende bugt') is the most populous community on the eastern coast of Greenland, but what is the overall rank in all of Greenland?
+
+\newpage
+
+Hint 1:  \\
+Edward Smith was a British sea captain and naval officer. In 1880, he joined the White Star Line as an officer, beginning a long career in the British Merchant Navy. Smith went on to serve as the master of numerous White Star Line vessels. He died by drowning in the Atlantic Ocean. \\
+Hint 2:  \\
+Recall the Beta integral
+$$
+\int_0^1 t^{z_1 -1}(1-t)^{z_2-1}dt = B(z_1, z_2) 
+$$
+$B$ has the property
+$$
+B(m,n) = \frac{\Gamma(m)\Gamma(n)}{\Gamma(m+n)}
+$$
+Where $\Gamma$ is the Gamma function, continous counterpart of the factorial, i.e. $\Gamma(n) = (n-1)!$
+
+  
+
+\end{enumerate}
+\end{document}

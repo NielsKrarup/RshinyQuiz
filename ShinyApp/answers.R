@@ -1,8 +1,19 @@
 answers_list <- list(
-  "2023" = data.frame(Question = 1:7,
+  "2024" = data.frame(Question = 1:7,
                       Answer = c(
                         #Jeg sværger, hvis nogen er gået ind på GIT
                         #For at lure svarene, så kommer der til at ryge pikhoveder
+                        3596.4,                       #1: Isolated human
+                        39,                           #2: Old Testament
+                        61,                           #3: Overlap Years
+                        4049,                         #4: 2025^2 - 2024^2
+                        2599 ,                        #5: TESLA
+                        100,                          #6: Compound Dist
+                        7                             #7: Tasiilaq
+                      )
+  ), 
+  "2023" = data.frame(Question = 1:7,
+                      Answer = c(
                         174,                          #1: Pablo, Eminem overlap 
                         30,                           #2: RMS Britanica
                         11,                           #3: FIFA Scored in 11 seconds,

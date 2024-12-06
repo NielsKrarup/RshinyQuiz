@@ -221,7 +221,7 @@ server <- function(input, output, session){
   output$table1 <- DT::renderDataTable({
     #Latest scores
     df <- values$df_Table_Scores
-    DT::datatable(head(df, 10), options = list(dom = "t", filter = "none"))
+    DT::datatable(df , options = list(dom = "t", filter = "none"))
   })
   
   #Plot data frame, containing the score after 0 <= n <= 16 tries.
