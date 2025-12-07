@@ -1,5 +1,20 @@
 answers_list <- list(
+  "2025" = data.frame(Question = 1:7,
+                      Qcd = c("Rings of Saturn", "$TRUMP", "ll(n)", "Hitler,Margrethe..", "a^2-b^2", "Mink", "OL"),
+                      Answer = c(
+                        #Jeg sværger, hvis nogen er gået ind på GIT
+                        #For at lure svarene, så kommer der til at ryge pikhoveder
+                        20,                           #1: Saturn
+                        4.9255,                       #2: Trump Coin
+                        5,                            #3: lln
+                        32,                           #4: Hitler, Margrethe, AlQ, X Æ
+                        8100 ,                        #5: 2026^2 - 2024^2
+                        7,                            #6: Mink 100.000ths
+                        247.61                        #7: OL Athen
+                      )
+  ), 
   "2024" = data.frame(Question = 1:7,
+                      Qcd = c("Isolated", "Old Test", "OverlapYears", "2025^2", "Tesla", "CoumpDist", "Greenland"),
                       Answer = c(
                         #Jeg sværger, hvis nogen er gået ind på GIT
                         #For at lure svarene, så kommer der til at ryge pikhoveder

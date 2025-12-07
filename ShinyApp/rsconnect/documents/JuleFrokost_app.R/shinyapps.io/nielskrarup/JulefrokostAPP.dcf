@@ -1,0 +1,12 @@
+name: JulefrokostAPP
+title: JulefrokostAPP
+username: nielskrarup
+account: nielskrarup
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 16254921
+bundleId: 11283874
+url: https://nielskrarup.shinyapps.io/JulefrokostAPP/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

@@ -28,9 +28,10 @@ ui <- fluidPage(
   uiOutput("appTitleUI"),
   
   #Number of teams: NoTeams
-  numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 2, min = 1, max = 6),
+  numericInput(inputId = 'NoTeams', label = 'Number of teams',value = 3, min = 1, max = 6),
   #Questions used, use the sourced in list names
-  radioButtons(inputId = "year_questions", label = "Questions", choices = names(answers_list), selected = "2023"),
+  radioButtons(inputId = "year_questions", label = "Questions", inline = T,
+               choices = names(answers_list), selected = names(answers_list)[1]),
   
   ##UI for setting team names.
   
@@ -139,9 +140,9 @@ server <- function(input, output, session){
     sec <- as.numeric(format(
       Sys.time(), format = "%S"
     )) %% 10
-    sample <- as.logical(runif(1) < 0.75)
+    sample <- as.logical(runif(1) < 0.666)
     
-    if (sec %in% c(9:9) & sample  & show_jump_pic) {
+    if (sec %in% c(6) & sample  & show_jump_pic) {
       return(list(
         src = "Pics/Thyge.jpg",
         contentType = "image/jpeg",
@@ -221,7 +222,16 @@ server <- function(input, output, session){
   output$table1 <- DT::renderDataTable({
     #Latest scores
     df <- values$df_Table_Scores
-    DT::datatable(df , options = list(dom = "t", filter = "none"))
+    #df <- mtcars
+    DT::datatable(df, 
+                  options = list(
+                    pageLength = 10,      # show first 10 rows
+                    scrollY = "400px",    # height of scroll window
+                    scrollCollapse = TRUE,
+                    searching = FALSE,   # hide search box
+                    paging = FALSE        # disable pagination so scroll shows all rows
+                  )
+                  )
   })
   
   #Plot data frame, containing the score after 0 <= n <= 16 tries.
@@ -256,12 +266,13 @@ server <- function(input, output, session){
     g <- ggplot(data = values$df_plot, aes(x = Answers_Spent, y = Total_Score, group = Team) ) + 
       geom_line(aes(colour = Team), size = 1) + 
       geom_point(aes(col = Team, shape = Team), size = 3) +
-      scale_x_continuous(breaks = 0:16, limits = c(0,16)) + scale_y_continuous(trans = "log2") +
+      scale_x_continuous(breaks = 0:Max_No_Guesses, limits = c(0,Max_No_Guesses)) + 
+      scale_y_continuous(trans = "log2") +
       
       theme(axis.title = element_text(size = 12),
             axis.text = element_text(size = 10),
-            legend.title = element_text(size = 16, face = "bold"),
-            legend.text=element_text(size = 14),
+            legend.title = element_blank(),
+            legend.text = element_text(size = 16, face = "bold"),
             legend.key.size = unit(3, "line"),
             #legend position
             legend.position = 'top', 
@@ -301,14 +312,21 @@ server <- function(input, output, session){
 
       lapply(1:input$NoTeams, function(iter){
         column( floor(12 / input$NoTeams ),
-          textInput(inputId = paste0("team_", iter), label = paste0("Name of team", iter))
+          textInput(inputId = paste0("team_", iter), label = paste0("Name of team", iter), value = paste0("Team", iter))
         )
       })
   })
   
   #
   output$choicesQuestion <- renderUI({
-    selectInput(inputId = "Cur_Question", label = "Question", choices = answers_list[[input$year_questions]]["Question"])
+#get Question code in label
+    chs <-
+      setNames(as.vector(answers_list[[input$year_questions]]$Question),
+               as.vector(paste0(
+                 answers_list[[input$year_questions]]$Question, ":", answers_list[[input$year_questions]]$Qcd
+               )))
+    
+    selectInput(inputId = "Cur_Question", label = "Question", choices = chs)
     
   })
   
@@ -317,7 +335,7 @@ server <- function(input, output, session){
   output$UI_Cur_L <- renderUI({
     times <- input$Cur_Submit
     div(id=letters[(times %% length(letters)) + 1],
-        numericInput("Cur_L", 'Left Interval Quess', 0)
+        numericInput(inputId = "Cur_L", label = 'Left Interval Quess',value =  NA)
     )
   })
   
@@ -325,7 +343,7 @@ server <- function(input, output, session){
   output$UI_Cur_R <- renderUI({
     times <- input$Cur_Submit
     div(id=letters[(times %% length(letters)) + 1],
-        numericInput("Cur_R", 'Right Interval Quess', 0)
+        numericInput("Cur_R", 'Right Interval Quess', NA)
         #passwordInput("Cur_R", 'Right Interval Quess', placeholder = 'Crypto_PassWord')
     )
   })
